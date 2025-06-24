@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 
 interface AuthProps {
+  mode?: 'signin' | 'signup';
   onLogin: (email: string) => void;
   onBack: () => void;
 }
 
-export default function Auth({ onLogin, onBack }: AuthProps) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
+  const [isLogin, setIsLogin] = useState(mode === 'signin');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -16,9 +17,12 @@ export default function Auth({ onLogin, onBack }: AuthProps) {
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    setIsLogin(mode === 'signin');
+  }, [mode]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate authentication
     onLogin(formData.email);
   };
 
@@ -149,12 +153,12 @@ export default function Auth({ onLogin, onBack }: AuthProps) {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
+              <a
+                href={isLogin ? "/auth/signup" : "/auth/signin"}
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
-              </button>
+              </a>
             </p>
           </div>
         </div>

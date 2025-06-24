@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Landing from './components/Landing';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
@@ -7,113 +8,91 @@ import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
 import Results from './components/Results';
 
-type Screen = 'landing' | 'auth' | 'dashboard' | 'resume-upload' | 'job-description' | 'loading' | 'results';
-
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [userEmail, setUserEmail] = useState('');
   const [resumeData, setResumeData] = useState<any>(null);
   const [jobDescription, setJobDescription] = useState('');
 
-  const handleGetStarted = () => {
-    setCurrentScreen('auth');
+  const useNav = () => {
+    const navigate = useNavigate();
+    return {
+      goTo: (path: string) => navigate(path),
+    };
   };
 
-  const handleLogin = (email: string) => {
-    setUserEmail(email);
-    setCurrentScreen('dashboard');
-  };
+  function LandingScreen() {
+    const { goTo } = useNav();
+    return <Landing onGetStarted={() => goTo('/auth/signin')} />;
+  }
 
-  const handleLogout = () => {
-    setUserEmail('');
-    setResumeData(null);
-    setJobDescription('');
-    setCurrentScreen('landing');
-  };
+  function AuthScreen({ mode }: { mode: 'signin' | 'signup' }) {
+    const { goTo } = useNav();
+    return (
+      <Auth
+        mode={mode}
+        onLogin={(email) => { setUserEmail(email); goTo('/dashboard'); }}
+        onBack={() => goTo('/')}
+      />
+    );
+  }
 
-  const handleTestResume = () => {
-    setCurrentScreen('resume-upload');
-  };
+  function DashboardScreen() {
+    const { goTo } = useNav();
+    return (
+      <Dashboard
+        userEmail={userEmail}
+        onTestResume={() => goTo('/resume-upload')}
+        onLogout={() => { setUserEmail(''); setResumeData(null); setJobDescription(''); goTo('/'); }}
+      />
+    );
+  }
+  function ResumeUploadScreen() {
+    const { goTo } = useNav();
+    return (
+      <ResumeUpload
+        onNext={(data) => { setResumeData(data); goTo('/job-description'); }}
+        onBack={() => goTo('/dashboard')}
+      />
+    );
+  }
+  function JobDescriptionScreen() {
+    const { goTo } = useNav();
+    return (
+      <JobDescription
+        onNext={(desc) => { setJobDescription(desc); goTo('/loading'); }}
+        onBack={() => goTo('/resume-upload')}
+      />
+    );
+  }
+  function LoadingScreen() {
+    const { goTo } = useNav();
+    return <Loading onComplete={() => goTo('/results')} />;
+  }
+  function ResultsScreen() {
+    const { goTo } = useNav();
+    return (
+      <Results
+        onBack={() => goTo('/dashboard')}
+        onStartNewTest={() => { setResumeData(null); setJobDescription(''); goTo('/resume-upload'); }}
+      />
+    );
+  }
 
-  const handleResumeComplete = (data: any) => {
-    setResumeData(data);
-    setCurrentScreen('job-description');
-  };
-
-  const handleJobDescriptionComplete = (description: string) => {
-    setJobDescription(description);
-    setCurrentScreen('loading');
-  };
-
-  const handleAnalysisComplete = () => {
-    setCurrentScreen('results');
-  };
-
-  const handleStartNewTest = () => {
-    setResumeData(null);
-    setJobDescription('');
-    setCurrentScreen('resume-upload');
-  };
-
-  const handleBackFromAuth = () => {
-    setCurrentScreen('landing');
-  };
-
-  const handleBackFromResumeUpload = () => {
-    setCurrentScreen('dashboard');
-  };
-
-  const handleBackFromJobDescription = () => {
-    setCurrentScreen('resume-upload');
-  };
-
-  const handleBackFromResults = () => {
-    setCurrentScreen('dashboard');
-  };
-
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 'landing':
-        return <Landing onGetStarted={handleGetStarted} />;
-      case 'auth':
-        return <Auth onLogin={handleLogin} onBack={handleBackFromAuth} />;
-      case 'dashboard':
-        return (
-          <Dashboard
-            userEmail={userEmail}
-            onTestResume={handleTestResume}
-            onLogout={handleLogout}
-          />
-        );
-      case 'resume-upload':
-        return (
-          <ResumeUpload
-            onNext={handleResumeComplete}
-            onBack={handleBackFromResumeUpload}
-          />
-        );
-      case 'job-description':
-        return (
-          <JobDescription
-            onNext={handleJobDescriptionComplete}
-            onBack={handleBackFromJobDescription}
-          />
-        );
-      case 'loading':
-        return <Loading onComplete={handleAnalysisComplete} />;
-      case 'results':
-        return (
-          <Results
-            onBack={handleBackFromResults}
-            onStartNewTest={handleStartNewTest}
-          />
-        );
-      default:
-        return <Landing onGetStarted={handleGetStarted} />;
-    }
-  };
-
-  return <div className="App">{renderScreen()}</div>;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingScreen />} />
+        <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
+        <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />
+        <Route path="/dashboard" element={userEmail ? <DashboardScreen /> : <Navigate to="/" />} />
+        <Route path="/resume-upload" element={userEmail ? <ResumeUploadScreen /> : <Navigate to="/" />} />
+        <Route path="/job-description" element={userEmail && resumeData ? <JobDescriptionScreen /> : <Navigate to="/" />} />
+        <Route path="/loading" element={userEmail && resumeData && jobDescription ? <LoadingScreen /> : <Navigate to="/" />} />
+        <Route path="/results" element={userEmail && resumeData && jobDescription ? <ResultsScreen /> : <Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
