@@ -1,42 +1,67 @@
 import React from 'react';
-import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, X, TrendingUp, Target, FileText, Award } from 'lucide-react';
+import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award } from 'lucide-react';
+
+interface AnalysisData {
+  overallScore: number;
+  keywordMatch: number;
+  skillsMatch: number;
+  experienceMatch: number;
+  formatScore: number;
+  strengths: string[];
+  improvements: string[];
+  missingKeywords: string[];
+  keywordData: Array<{
+    category: string;
+    matched: number;
+    total: number;
+    percentage: number;
+  }>;
+  detailedAnalysis?: {
+    experienceMatch: string;
+    skillsMatch: string;
+    educationMatch: string;
+    overallFit: string;
+  };
+}
 
 interface ResultsProps {
+  analysisData: AnalysisData;
   onBack: () => void;
   onStartNewTest: () => void;
 }
 
-export default function Results({ onBack, onStartNewTest }: ResultsProps) {
-  const overallScore = 82;
-  const keywordMatch = 75;
-  const skillsMatch = 88;
-  const experienceMatch = 79;
-  const formatScore = 92;
+export default function Results({ analysisData, onBack, onStartNewTest }: ResultsProps) {
+  const {
+    overallScore,
+    keywordMatch,
+    skillsMatch,
+    experienceMatch,
+    formatScore,
+    strengths,
+    improvements,
+    missingKeywords,
+    keywordData
+  } = analysisData;
 
-  const strengths = [
-    'Strong technical skills alignment with job requirements',
-    'Relevant work experience in similar roles',
-    'Well-formatted and ATS-friendly resume structure',
-    'Good use of action verbs and quantified achievements'
-  ];
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
 
-  const improvements = [
-    'Include more keywords from the job description',
-    'Add specific metrics and numbers to achievements',
-    'Expand on cloud platform experience (AWS, Azure)',
-    'Include more details about leadership experience'
-  ];
+  const getProgressColor = (score: number) => {
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
 
-  const missingKeywords = [
-    'Kubernetes', 'Docker', 'Microservices', 'CI/CD', 'Agile', 'Scrum', 'AWS', 'Azure'
-  ];
-
-  const keywordData = [
-    { category: 'Technical Skills', matched: 12, total: 15, percentage: 80 },
-    { category: 'Soft Skills', matched: 8, total: 10, percentage: 80 },
-    { category: 'Tools & Technologies', matched: 6, total: 10, percentage: 60 },
-    { category: 'Methodologies', matched: 3, total: 6, percentage: 50 }
-  ];
+  const getMatchLevel = (score: number) => {
+    if (score >= 85) return 'Excellent Match';
+    if (score >= 70) return 'Strong Match';
+    if (score >= 55) return 'Good Match';
+    if (score >= 40) return 'Fair Match';
+    return 'Needs Improvement';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -77,7 +102,7 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
               <div className="text-right">
                 <div className="text-5xl font-bold mb-2">{overallScore}%</div>
                 <div className="bg-white bg-opacity-20 rounded-full px-4 py-2">
-                  <span className="text-sm font-medium">Strong Match</span>
+                  <span className="text-sm font-medium">{getMatchLevel(overallScore)}</span>
                 </div>
               </div>
             </div>
@@ -106,9 +131,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">{keywordMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(keywordMatch)}`}>{keywordMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${keywordMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(keywordMatch)}`} style={{ width: `${keywordMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -122,9 +147,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">{skillsMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(skillsMatch)}`}>{skillsMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-green-500 rounded-full" style={{ width: `${skillsMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(skillsMatch)}`} style={{ width: `${skillsMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -138,9 +163,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-indigo-600">{experienceMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(experienceMatch)}`}>{experienceMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${experienceMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(experienceMatch)}`} style={{ width: `${experienceMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -154,9 +179,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-purple-600">{formatScore}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(formatScore)}`}>{formatScore}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${formatScore}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(formatScore)}`} style={{ width: `${formatScore}%` }} />
                     </div>
                   </div>
                 </div>
@@ -174,10 +199,10 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                       <p className="text-sm text-gray-600">{item.matched} of {item.total} keywords found</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-gray-900">{item.percentage}%</div>
+                      <div className={`text-lg font-bold ${getScoreColor(item.percentage)}`}>{item.percentage}%</div>
                       <div className="w-24 h-2 bg-gray-200 rounded-full">
                         <div 
-                          className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out"
+                          className={`h-full rounded-full transition-all duration-1000 ease-out ${getProgressColor(item.percentage)}`}
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>
@@ -188,57 +213,63 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
             </div>
 
             {/* Missing Keywords */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
-              <p className="text-gray-600 mb-4">
-                Consider adding these important keywords from the job description to improve your ATS score:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {missingKeywords.map((keyword, index) => (
-                  <span
-                    key={index}
-                    className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
-                  >
-                    {keyword}
-                  </span>
-                ))}
+            {missingKeywords.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
+                <p className="text-gray-600 mb-4">
+                  Consider adding these important keywords from the job description to improve your ATS score:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {missingKeywords.map((keyword, index) => (
+                    <span
+                      key={index}
+                      className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Strengths */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                <CheckCircle className="h-6 w-6 text-green-600" />
-                <span>Strengths</span>
-              </h3>
-              <div className="space-y-3">
-                {strengths.map((strength, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-gray-700">{strength}</p>
-                  </div>
-                ))}
+            {strengths.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                  <span>Strengths</span>
+                </h3>
+                <div className="space-y-3">
+                  {strengths.map((strength, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">{strength}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Areas for Improvement */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                <AlertTriangle className="h-6 w-6 text-orange-600" />
-                <span>Areas for Improvement</span>
-              </h3>
-              <div className="space-y-3">
-                {improvements.map((improvement, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-gray-700">{improvement}</p>
-                  </div>
-                ))}
+            {improvements.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                  <span>Areas for Improvement</span>
+                </h3>
+                <div className="space-y-3">
+                  {improvements.map((improvement, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">{improvement}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Action Buttons */}
             <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">

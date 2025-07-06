@@ -68,17 +68,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await authApi.login({ email, password });
       console.log('Login response:', response);
       
-      if (response.success && response.data) {
+      if (response.success && response.data && response.data.user) {
         console.log('Login successful, setting user:', response.data.user);
         setUser(response.data.user);
+        // Clear any existing error
+        setError(null);
       } else {
-        console.log('Login failed:', response);
-        throw new Error(response.error || 'Login failed');
+        console.log('Login failed - no user data:', response);
+        throw new Error('Login failed - no user data received');
       }
     } catch (error) {
       console.error('Login error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
       setError(errorMessage);
+      // Clear user state on error
+      setUser(null);
       throw error;
     } finally {
       setIsLoading(false);
@@ -96,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (response.success && response.data) {
         setUser(response.data.user);
       } else {
-        throw new Error(response.error || 'Registration failed');
+        throw new Error('Registration failed');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
@@ -130,7 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (response.success && response.data) {
         setUser(response.data.user);
       } else {
-        throw new Error(response.error || 'Profile update failed');
+        throw new Error('Profile update failed');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Profile update failed';

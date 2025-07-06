@@ -40,13 +40,33 @@ export interface Resume {
   id: string;
   title: string;
   type: 'form' | 'file';
-  content: any;
+  content: ResumeContent;
   fileName?: string;
   filePath?: string;
   fileSize?: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ResumeContent {
+  name: string;
+  email: string;
+  phone: string;
+  summary: string;
+  experience: Array<{
+    company: string;
+    position: string;
+    duration: string;
+    description: string;
+  }>;
+  education: Array<{
+    institution: string;
+    degree: string;
+    year: string;
+    gpa: string;
+  }>;
+  skills: string;
 }
 
 export interface JobDescription {
@@ -60,22 +80,56 @@ export interface JobDescription {
 
 export interface Analysis {
   id: string;
-  matchScore: number;
+  // Updated scoring fields matching database schema
+  overallScore: number;
+  keywordMatch: number;
+  skillsMatch: number;
+  experienceMatch: number;
+  formatScore: number;
+  
+  // Feedback arrays
   strengths: string[];
-  weaknesses: string[];
-  suggestions: string[];
-  missingSkills: string[];
-  aiResponse: any;
+  improvements: string[];
+  missingKeywords: string[];
+  
+  // Structured data
+  keywordData: Array<{
+    category: string;
+    matched: number;
+    total: number;
+    percentage: number;
+  }>;
+  detailedAnalysis?: {
+    experienceMatch: string;
+    skillsMatch: string;
+    educationMatch: string;
+    overallFit: string;
+  };
+  recommendations?: {
+    resumeImprovements: string[];
+    skillDevelopment: string[];
+    experienceGaps: string[];
+  };
+  aiResponse: Record<string, unknown>;
+  
+  // Legacy fields for backward compatibility
+  matchScore?: number;
+  weaknesses?: string[];
+  suggestions?: string[];
+  missingSkills?: string[];
+  
   createdAt: string;
   updatedAt: string;
-  resume: {
-    id: string;
-    title: string;
-  };
-  jobDescription: {
-    id: string;
-    title: string;
-  };
+  userId: string;
+  resumeId: string;
+  jobDescId: string;
+}
+
+export interface PaginationData {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 // Token management
@@ -101,7 +155,7 @@ class TokenManager {
 }
 
 // Generic API request handler
-async function apiRequest<T = any>(
+async function apiRequest<T = unknown>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
@@ -115,7 +169,7 @@ async function apiRequest<T = any>(
 
     // Don't set Content-Type for FormData
     if (options.body instanceof FormData) {
-      delete (defaultHeaders as any)['Content-Type'];
+      delete (defaultHeaders as Record<string, string>)['Content-Type'];
     }
 
     const config: RequestInit = {
@@ -166,23 +220,32 @@ export const authApi = {
     password: string;
   }): Promise<AuthResponse> {
     try {
-      const response = await apiRequest<any>('/auth/login', {
+      // The backend returns: { success: true, token: "...", data: { user: {...} } }
+      const response = await apiRequest<unknown>('/auth/login', {
         method: 'POST',
         body: JSON.stringify(credentials),
       });
 
       console.log('Raw API response:', response);
 
-      if (response.success && response.token) {
-        TokenManager.setToken(response.token);
+      // Cast the response to the expected structure
+      const loginResponse = response as {
+        success: boolean;
+        token: string;
+        data: { user: User };
+        error?: string;
+      };
+
+      if (loginResponse.success && loginResponse.token && loginResponse.data) {
+        TokenManager.setToken(loginResponse.token);
         return {
           success: true,
-          token: response.token,
-          data: response.data
+          token: loginResponse.token,
+          data: loginResponse.data
         };
       }
 
-      throw new Error(response.error || 'Login failed');
+      throw new Error(loginResponse.error || 'Login failed');
     } catch (error) {
       console.error('Login API error:', error);
       throw error;
@@ -237,63 +300,59 @@ export const authApi = {
 
 // Resume API
 export const resumeApi = {
-  async getResumes(params?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-  }): Promise<ApiResponse<{ resumes: Resume[]; pagination: any }>> {
-    const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.set('page', params.page.toString());
-    if (params?.limit) queryParams.set('limit', params.limit.toString());
-    if (params?.search) queryParams.set('search', params.search);
-
-    return apiRequest(`/resumes?${queryParams.toString()}`);
+  // Get user's resume (single resume)
+  getResume: () => {
+    return apiRequest<{ resume: Resume | null }>('/resumes');
   },
 
-  async getResume(id: string): Promise<ApiResponse<{ resume: Resume }>> {
-    return apiRequest(`/resumes/${id}`);
+  // Get single resume by ID (for compatibility)
+  getResumeById: (id: string) => {
+    return apiRequest<{ resume: Resume }>(`/resumes/${id}`);
   },
 
-  async createResume(resumeData: {
-    title: string;
-    type: 'form' | 'file';
-    content: any;
-  }): Promise<ApiResponse<{ resume: Resume }>> {
-    return apiRequest('/resumes', {
+  // Create or update resume
+  createResume: (data: { title: string; type: 'form' | 'file'; content: ResumeContent }) => {
+    return apiRequest<{ resume: Resume }>('/resumes', {
       method: 'POST',
-      body: JSON.stringify(resumeData),
+      body: JSON.stringify(data),
     });
   },
 
-  async updateResume(
-    id: string,
-    updates: {
-      title?: string;
-      type?: 'form' | 'file';
-      content?: any;
-      isActive?: boolean;
-    }
-  ): Promise<ApiResponse<{ resume: Resume }>> {
-    return apiRequest(`/resumes/${id}`, {
+  // Update resume
+  updateResume: (id: string, data: { title?: string; type?: 'form' | 'file'; content?: ResumeContent; isActive?: boolean }) => {
+    return apiRequest<{ resume: Resume }>(`/resumes/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify(updates),
+      body: JSON.stringify(data),
     });
   },
 
-  async deleteResume(id: string): Promise<ApiResponse> {
+  // Delete resume
+  deleteResume: (id: string) => {
     return apiRequest(`/resumes/${id}`, {
       method: 'DELETE',
     });
   },
 
-  async uploadResumeFile(id: string, file: File): Promise<ApiResponse<{ resume: Resume }>> {
+  // Upload resume file
+  uploadResume: async (file: File, title: string): Promise<ApiResponse<{ resume: Resume }>> => {
     const formData = new FormData();
     formData.append('resume', file);
+    formData.append('title', title);
 
-    return apiRequest(`/resumes/${id}/upload`, {
+    const response = await fetch(`${API_BASE_URL}/resumes/upload`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Authorization': `Bearer ${TokenManager.getToken()}`
+      },
+      body: formData
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Upload failed');
+    }
+
+    return response.json();
   },
 
   async downloadResume(id: string): Promise<Blob> {
@@ -322,7 +381,7 @@ export const jobApi = {
     page?: number;
     limit?: number;
     search?: string;
-  }): Promise<ApiResponse<{ jobs: JobDescription[]; pagination: any }>> {
+  }): Promise<ApiResponse<{ jobs: JobDescription[]; pagination: PaginationData }>> {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.set('page', params.page.toString());
     if (params?.limit) queryParams.set('limit', params.limit.toString());
@@ -381,7 +440,7 @@ export const analysisApi = {
   async getAnalyses(params?: {
     page?: number;
     limit?: number;
-  }): Promise<ApiResponse<{ analyses: Analysis[]; pagination: any }>> {
+  }): Promise<ApiResponse<{ analyses: Analysis[]; pagination: PaginationData }>> {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.set('page', params.page.toString());
     if (params?.limit) queryParams.set('limit', params.limit.toString());
