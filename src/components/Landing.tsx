@@ -1,11 +1,16 @@
 import React from 'react';
 import { CheckCircle, Target, TrendingUp, Users, Star, ArrowRight, Zap, Shield, Clock, Award, FileText, BarChart3 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LandingProps {
   onGetStarted: () => void;
+  onGoToDashboard?: () => void;
+  onStartAnalysis?: () => void;
 }
 
-export default function Landing({ onGetStarted }: LandingProps) {
+export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis }: LandingProps) {
+  const { isAuthenticated, user } = useAuth();
+  
   const testimonials = [
     {
       name: "Sarah Chen",
@@ -84,12 +89,24 @@ export default function Landing({ onGetStarted }: LandingProps) {
               <a href="#testimonials" className="text-gray-300 hover:text-white transition-colors">Reviews</a>
               <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
             </nav>
-            <button
-              onClick={onGetStarted}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              Get Started Free
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-300">Welcome back, {user?.name || user?.email}!</span>
+                <button
+                  onClick={onGoToDashboard}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  Go to Dashboard
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onGetStarted}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Get Started Free
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -100,33 +117,70 @@ export default function Landing({ onGetStarted }: LandingProps) {
           <div className="text-center">
             <div className="inline-flex items-center bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-6 py-3 mb-8">
               <Star className="h-5 w-5 text-yellow-400 mr-2" />
-              <span className="text-blue-200 font-medium">Trusted by 50,000+ job seekers</span>
+              <span className="text-blue-200 font-medium">
+                {isAuthenticated ? "Ready to optimize your next resume?" : "Trusted by 50,000+ job seekers"}
+              </span>
             </div>
             
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight">
-              Your Resume's
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-gradient">
-                Secret Weapon
-              </span>
+              {isAuthenticated ? (
+                <>
+                  Welcome back,
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 animate-gradient">
+                    {user?.name || 'User'}!
+                  </span>
+                </>
+              ) : (
+                <>
+                  Your Resume's
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-gradient">
+                    Secret Weapon
+                  </span>
+                </>
+              )}
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Beat the ATS algorithms and land more interviews with our AI-powered resume optimization platform. 
-              Get instant feedback, keyword analysis, and personalized recommendations.
+              {isAuthenticated ? (
+                "Ready to optimize another resume? Access your dashboard to manage your resumes, job descriptions, and analysis results."
+              ) : (
+                "Beat the ATS algorithms and land more interviews with our AI-powered resume optimization platform. Get instant feedback, keyword analysis, and personalized recommendations."
+              )}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-              <button
-                onClick={onGetStarted}
-                className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
-              >
-                <span>Start Free Analysis</span>
-                <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <div className="flex items-center space-x-2 text-gray-300">
-                <CheckCircle className="h-5 w-5 text-green-400" />
-                <span>No credit card required</span>
-              </div>
+              {isAuthenticated ? (
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <button
+                    onClick={onGoToDashboard}
+                    className="group bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-green-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
+                  >
+                    <span>Go to Dashboard</span>
+                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <button
+                    onClick={onStartAnalysis}
+                    className="group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
+                  >
+                    <span>Start New Analysis</span>
+                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={onGetStarted}
+                    className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
+                  >
+                    <span>Start Free Analysis</span>
+                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <div className="flex items-center space-x-2 text-gray-300">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    <span>No credit card required</span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Trust Indicators */}

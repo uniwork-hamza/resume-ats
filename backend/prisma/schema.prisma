@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String?
+  name      String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  resumes    Resume[]
+  jobDescs   JobDescription[]
+  analyses   Analysis[]
+
+  @@map("users")
+}
+
+model Resume {
+  id          String   @id @default(uuid())
+  title       String
+  type        String   // 'form' or 'file'
+  content     Json     // Store structured resume data matching frontend form
+  fileName    String?
+  filePath    String?
+  fileSize    Int?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign Keys
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relations
+  analyses    Analysis[]
+
+  @@map("resumes")
+}
+
+model JobDescription {
+  id          String   @id @default(uuid())
+  title       String   // Auto-extracted or user-provided title
+  description String   // Full job description text from frontend
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign Keys
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relations
+  analyses    Analysis[]
+
+  @@map("job_descriptions")
+}
+
+model Analysis {
+  id             String   @id @default(uuid())
+  matchScore     Float    // Percentage match score
+  strengths      String[] // Array of strengths
+  weaknesses     String[] // Array of areas for improvement
+  suggestions    String[] // Array of suggestions
+  missingSkills  String[] // Array of missing skills
+  aiResponse     Json     // Complete AI response
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Foreign Keys
+  userId         String
+  resumeId       String
+  jobDescId      String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume         Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescription JobDescription @relation(fields: [jobDescId], references: [id], onDelete: Cascade)
+
+  @@map("analyses")
+}
+
+// Model for storing system settings and configurations
+model SystemConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("system_configs")
+} 

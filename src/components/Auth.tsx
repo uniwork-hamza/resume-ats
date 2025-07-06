@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Target, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface AuthProps {
   mode?: 'signin' | 'signup';
@@ -16,14 +17,71 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
     password: '',
     confirmPassword: ''
   });
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  const { login, register, isLoading, error, clearError } = useAuth();
 
   useEffect(() => {
     setIsLogin(mode === 'signin');
-  }, [mode]);
+    clearError();
+    setValidationErrors([]);
+  }, [mode, clearError]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Clear errors when form data changes
+  useEffect(() => {
+    if (error) clearError();
+    setValidationErrors([]);
+  }, [formData, error, clearError]);
+
+  const validateForm = (): boolean => {
+    const errors: string[] = [];
+
+    if (!formData.email) {
+      errors.push('Email is required');
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.push('Please enter a valid email address');
+    }
+
+    if (!formData.password) {
+      errors.push('Password is required');
+    } else if (formData.password.length < 6) {
+      errors.push('Password must be at least 6 characters long');
+    }
+
+    if (!isLogin) {
+      if (!formData.name || formData.name.trim().length < 2) {
+        errors.push('Name must be at least 2 characters long');
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        errors.push('Passwords do not match');
+      }
+    }
+
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(formData.email);
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      if (isLogin) {
+        await login(formData.email, formData.password);
+      } else {
+        await register(formData.email, formData.password, formData.name);
+      }
+      
+      // If successful, call the onLogin callback
+      onLogin(formData.email);
+    } catch (error) {
+      // Error is handled by the auth context
+      console.error('Authentication error:', error);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +116,22 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
 
         {/* Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
+          {/* Error Messages */}
+          {(error || validationErrors.length > 0) && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center space-x-2 text-red-700">
+                <AlertCircle className="h-5 w-5" />
+                <span className="font-medium">Please fix the following errors:</span>
+              </div>
+              <ul className="mt-2 text-sm text-red-600 space-y-1">
+                {error && <li>{error}</li>}
+                {validationErrors.map((err, index) => (
+                  <li key={index}>{err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
@@ -71,7 +145,8 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                     placeholder="Enter your full name"
                     required={!isLogin}
                   />
@@ -90,7 +165,8 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                   placeholder="Enter your email"
                   required
                 />
@@ -108,7 +184,8 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                   placeholder="Enter your password"
                   required
                 />
@@ -134,7 +211,8 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                     placeholder="Confirm your password"
                     required={!isLogin}
                   />
@@ -144,21 +222,31 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none disabled:hover:translate-y-0"
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>{isLogin ? 'Signing In...' : 'Creating Account...'}</span>
+                </div>
+              ) : (
+                isLogin ? 'Sign In' : 'Create Account'
+              )}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <a
-                href={isLogin ? "/auth/signup" : "/auth/signin"}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                disabled={isLoading}
+                className="text-blue-600 hover:text-blue-700 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
-              </a>
+              </button>
             </p>
           </div>
         </div>
