@@ -145,15 +145,23 @@ router.post('/', protect, validate(analysisSchemas.create), async (req, res, nex
 
     // Perform AI analysis
     const analysisResult = await analyzeResume(resume.content, jobDescription);
-
-    // Save analysis to database
+    console.log('OpenAI Analysis Result:', analysisResult);
+    
+    // Save analysis to database with proper field mapping
     const newAnalysis = await prisma.analysis.create({
       data: {
-        matchScore: analysisResult.matchScore,
-        strengths: analysisResult.strengths,
-        weaknesses: analysisResult.weaknesses,
-        suggestions: analysisResult.suggestions,
-        missingSkills: analysisResult.missingSkills,
+        // Map OpenAI response fields to database schema
+        overallScore: analysisResult.aiResponse.overallScore || analysisResult.matchScore || 0,
+        keywordMatch: analysisResult.aiResponse.keywordMatch || 0,
+        skillsMatch: analysisResult.aiResponse.skillsMatch || 0,
+        experienceMatch: analysisResult.aiResponse.experienceMatch || 0,
+        formatScore: analysisResult.aiResponse.formatScore || 0,
+        strengths: analysisResult.aiResponse.strengths || analysisResult.strengths || [],
+        improvements: analysisResult.aiResponse.improvements || analysisResult.weaknesses || [],
+        missingKeywords: analysisResult.aiResponse.missingKeywords || analysisResult.missingSkills || [],
+        keywordData: analysisResult.aiResponse.keywordData || [],
+        detailedAnalysis: analysisResult.aiResponse.detailedAnalysis || null,
+        recommendations: analysisResult.aiResponse.recommendations || null,
         aiResponse: analysisResult.aiResponse,
         userId: req.user.id,
         resumeId,
@@ -218,11 +226,18 @@ router.post('/:id/reanalyze', protect, async (req, res, next) => {
         id: req.params.id,
       },
       data: {
-        matchScore: analysisResult.matchScore,
-        strengths: analysisResult.strengths,
-        weaknesses: analysisResult.weaknesses,
-        suggestions: analysisResult.suggestions,
-        missingSkills: analysisResult.missingSkills,
+        // Map OpenAI response fields to database schema
+        overallScore: analysisResult.aiResponse.overallScore || analysisResult.matchScore || 0,
+        keywordMatch: analysisResult.aiResponse.keywordMatch || 0,
+        skillsMatch: analysisResult.aiResponse.skillsMatch || 0,
+        experienceMatch: analysisResult.aiResponse.experienceMatch || 0,
+        formatScore: analysisResult.aiResponse.formatScore || 0,
+        strengths: analysisResult.aiResponse.strengths || analysisResult.strengths || [],
+        improvements: analysisResult.aiResponse.improvements || analysisResult.weaknesses || [],
+        missingKeywords: analysisResult.aiResponse.missingKeywords || analysisResult.missingSkills || [],
+        keywordData: analysisResult.aiResponse.keywordData || [],
+        detailedAnalysis: analysisResult.aiResponse.detailedAnalysis || null,
+        recommendations: analysisResult.aiResponse.recommendations || null,
         aiResponse: analysisResult.aiResponse,
       },
       include: {

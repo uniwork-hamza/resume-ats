@@ -19,14 +19,43 @@ Title: ${jobDescription.title}
 ${jobDescription.description}
 
 **ANALYSIS REQUIREMENTS:**
-Please provide a detailed analysis in the following JSON format:
+Please provide a detailed analysis in the following JSON format exactly as specified:
 
 {
-  "matchScore": [number between 0-100],
-  "strengths": [array of candidate's strengths matching the job],
-  "weaknesses": [array of areas where candidate is lacking],
-  "suggestions": [array of specific improvements candidate can make],
-  "missingSkills": [array of required skills not found in resume],
+  "overallScore": [number between 1-100 - overall match score],
+  "keywordMatch": [number between 1-100 - keyword alignment score],
+  "skillsMatch": [number between 1-100 - skills alignment score],
+  "experienceMatch": [number between 1-100 - experience relevance score],
+  "formatScore": [number between 1-100 - resume format and ATS compatibility score],
+  "strengths": [array of 3-5 specific strengths where candidate excels],
+  "improvements": [array of 3-5 specific areas for improvement],
+  "missingKeywords": [array of 5-10 important keywords from job description missing in resume],
+  "keywordData": [
+    {
+      "category": "Technical Skills",
+      "matched": [number of matched technical skills],
+      "total": [total technical skills required],
+      "percentage": [calculated percentage]
+    },
+    {
+      "category": "Soft Skills", 
+      "matched": [number of matched soft skills],
+      "total": [total soft skills required],
+      "percentage": [calculated percentage]
+    },
+    {
+      "category": "Tools & Technologies",
+      "matched": [number of matched tools/technologies],
+      "total": [total tools/technologies required],
+      "percentage": [calculated percentage]
+    },
+    {
+      "category": "Methodologies",
+      "matched": [number of matched methodologies],
+      "total": [total methodologies required],
+      "percentage": [calculated percentage]
+    }
+  ],
   "detailedAnalysis": {
     "experienceMatch": "[detailed analysis of experience alignment]",
     "skillsMatch": "[detailed analysis of skills alignment]",
@@ -41,26 +70,28 @@ Please provide a detailed analysis in the following JSON format:
 }
 
 **ANALYSIS CRITERIA:**
-1. **Match Score Calculation:**
-   - Skills match: 40%
-   - Experience relevance: 30%
-   - Education/Qualifications: 20%
-   - Overall presentation: 10%
+1. **Score Calculation Guidelines:**
+   - overallScore: Weighted average of all other scores
+   - keywordMatch: How well resume keywords match job description (1-100)
+   - skillsMatch: Alignment of candidate skills with job requirements (1-100)
+   - experienceMatch: Relevance of work experience to the role (1-100)
+   - formatScore: ATS-friendliness and resume structure quality (1-100)
 
 2. **Focus Areas:**
-   - Technical skills alignment
-   - Experience level and relevance
-   - Education and certifications
-   - Resume completeness and presentation
-   - Keyword matching for ATS compatibility
+   - Extract and count actual keywords from job description
+   - Compare technical skills, soft skills, tools, and methodologies
+   - Assess experience relevance and level
+   - Evaluate resume format and ATS compatibility
+   - Provide specific, actionable recommendations
 
-3. **Provide Specific Feedback:**
-   - Be specific in recommendations
-   - Suggest concrete actions
-   - Highlight both positive aspects and areas for improvement
+3. **Requirements:**
+   - Be specific in all recommendations
+   - Count actual keywords and skills for accuracy
+   - Calculate percentages based on real matches
+   - Provide concrete, actionable feedback
    - Consider ATS optimization
 
-Please ensure the response is valid JSON and provides actionable insights.
+CRITICAL: Return ONLY valid JSON with the exact structure specified above.
 `;
 };
 
@@ -186,7 +217,6 @@ export const analyzeResume = async (resumeData, jobDescription) => {
     });
 
     const analysisText = response.choices[0].message.content;
-    
     // Parse the JSON response
     let analysis;
     try {
@@ -200,18 +230,19 @@ export const analyzeResume = async (resumeData, jobDescription) => {
         throw new AppError('Invalid response format from OpenAI', 500);
       }
     }
-
-    // Validate required fields
-    if (!analysis.matchScore || !analysis.strengths || !analysis.weaknesses) {
-      throw new AppError('Incomplete analysis response', 500);
-    }
+    // console.log("analysis", analysis);
+    // if (!analysis.matchScore || !analysis.strengths || !analysis.weaknesses) {
+    //   throw new AppError('Incomplete analysis response', 500);
+    // }
 
     return {
-      matchScore: analysis.matchScore,
-      strengths: analysis.strengths,
-      weaknesses: analysis.weaknesses,
-      suggestions: analysis.suggestions || [],
-      missingSkills: analysis.missingSkills || [],
+      // Keep backward compatibility for old fields
+      matchScore: analysis.overallScore || 0,
+      strengths: analysis.strengths || [],
+      weaknesses: analysis.improvements || [],
+      suggestions: analysis.recommendations?.resumeImprovements || [],
+      missingSkills: analysis.missingKeywords || [],
+      // Store complete AI response
       aiResponse: analysis,
     };
 

@@ -70,12 +70,24 @@ model JobDescription {
 
 model Analysis {
   id             String   @id @default(uuid())
-  matchScore     Float    // Percentage match score
+  // Updated scoring fields to match OpenAI response
+  overallScore   Float    // Overall match score (was matchScore)
+  keywordMatch   Float    // Keyword alignment score  
+  skillsMatch    Float    // Skills alignment score
+  experienceMatch Float   // Experience relevance score
+  formatScore    Float    // ATS-friendliness score
+  
+  // Feedback arrays
   strengths      String[] // Array of strengths
-  weaknesses     String[] // Array of areas for improvement
-  suggestions    String[] // Array of suggestions
-  missingSkills  String[] // Array of missing skills
-  aiResponse     Json     // Complete AI response
+  improvements   String[] // Array of areas for improvement (was weaknesses)
+  missingKeywords String[] // Array of missing keywords (was missingSkills)
+  
+  // Complete structured analysis data
+  keywordData    Json     // Detailed keyword analysis by category
+  detailedAnalysis Json?  // Optional detailed analysis sections
+  recommendations Json?   // Optional recommendations
+  aiResponse     Json     // Complete AI response for backup
+  
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
