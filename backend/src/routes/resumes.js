@@ -14,54 +14,22 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Get all resumes for current user
+// Get user's resume (single resume per user)
 router.get('/', protect, async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
-    const skip = (page - 1) * limit;
-
-    const where = {
-      userId: req.user.id,
-      ...(search && {
-        title: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      }),
-    };
-
-    const [resumes, total] = await Promise.all([
-      prisma.resume.findMany({
-        where,
-        skip: parseInt(skip),
-        take: parseInt(limit),
-        orderBy: {
-          updatedAt: 'desc',
-        },
-        select: {
-          id: true,
-          title: true,
-          type: true,
-          fileName: true,
-          fileSize: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      }),
-      prisma.resume.count({ where }),
-    ]);
+    const resume = await prisma.resume.findFirst({
+      where: {
+        userId: req.user.id,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
 
     res.status(200).json({
       success: true,
       data: {
-        resumes,
-        pagination: {
-          total,
-          page: parseInt(page),
-          limit: parseInt(limit),
-          totalPages: Math.ceil(total / limit),
-        },
+        resume,
       },
     });
   } catch (error) {
@@ -69,7 +37,7 @@ router.get('/', protect, async (req, res, next) => {
   }
 });
 
-// Get single resume
+// Get single resume (for compatibility)
 router.get('/:id', protect, async (req, res, next) => {
   try {
     const resume = await prisma.resume.findFirst({
@@ -94,24 +62,47 @@ router.get('/:id', protect, async (req, res, next) => {
   }
 });
 
-// Create new resume
+// Create or update resume (single resume per user)
 router.post('/', protect, validate(resumeSchemas.create), async (req, res, next) => {
   try {
     const { title, type, content } = req.body;
 
-    const newResume = await prisma.resume.create({
-      data: {
-        title,
-        type,
-        content,
+    // Check if user already has a resume
+    const existingResume = await prisma.resume.findFirst({
+      where: {
         userId: req.user.id,
       },
     });
 
+    let resume;
+    if (existingResume) {
+      // Update existing resume
+      resume = await prisma.resume.update({
+        where: {
+          id: existingResume.id,
+        },
+        data: {
+          title,
+          type,
+          content,
+        },
+      });
+    } else {
+      // Create new resume
+      resume = await prisma.resume.create({
+        data: {
+          title,
+          type,
+          content,
+          userId: req.user.id,
+        },
+      });
+    }
+
     res.status(201).json({
       success: true,
       data: {
-        resume: newResume,
+        resume,
       },
     });
   } catch (error) {
@@ -119,7 +110,7 @@ router.post('/', protect, validate(resumeSchemas.create), async (req, res, next)
   }
 });
 
-// Upload resume file and parse with AI
+// Upload resume file and parse with AI (single resume per user)
 router.post('/upload', protect, uploadSingle('resume'), async (req, res, next) => {
   try {
     if (!req.file) {
@@ -153,23 +144,56 @@ router.post('/upload', protect, uploadSingle('resume'), async (req, res, next) =
       // Parse the extracted text using OpenAI
       const parsedContent = await parseResumeText(extractedText);
       
-      // Create resume in database with parsed content
-      const newResume = await prisma.resume.create({
-        data: {
-          title: title.trim(),
-          type: 'file',
-          content: parsedContent,
-          fileName: req.file.originalname,
-          filePath: req.file.filename,
-          fileSize: req.file.size,
+      // Check if user already has a resume
+      const existingResume = await prisma.resume.findFirst({
+        where: {
           userId: req.user.id,
         },
       });
 
+      let resume;
+      if (existingResume) {
+        // Delete old file if exists
+        if (existingResume.filePath) {
+          const oldFilePath = join(__dirname, '../../uploads', existingResume.filePath);
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        }
+
+        // Update existing resume
+        resume = await prisma.resume.update({
+          where: {
+            id: existingResume.id,
+          },
+          data: {
+            title: title.trim(),
+            type: 'file',
+            content: parsedContent,
+            fileName: req.file.originalname,
+            filePath: req.file.filename,
+            fileSize: req.file.size,
+          },
+        });
+      } else {
+        // Create new resume
+        resume = await prisma.resume.create({
+          data: {
+            title: title.trim(),
+            type: 'file',
+            content: parsedContent,
+            fileName: req.file.originalname,
+            filePath: req.file.filename,
+            fileSize: req.file.size,
+            userId: req.user.id,
+          },
+        });
+      }
+
       res.status(201).json({
         success: true,
         data: {
-          resume: newResume,
+          resume,
         },
         message: 'Resume uploaded and processed successfully',
       });
