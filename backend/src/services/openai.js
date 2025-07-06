@@ -105,6 +105,61 @@ Focus on:
 `;
 };
 
+// Resume parsing prompt template
+const createResumeParsingPrompt = (resumeText) => {
+  return `
+You are an expert resume parser. Extract and structure the following resume text into a standardized JSON format.
+
+**RESUME TEXT:**
+${resumeText}
+
+**REQUIRED JSON FORMAT:**
+{
+  "name": "[Full name of the candidate]",
+  "email": "[Email address]",
+  "phone": "[Phone number]",
+  "summary": "[Professional summary or objective - if not present, create a brief one based on the resume]",
+  "experience": [
+    {
+      "company": "[Company name]",
+      "position": "[Job title/position]",
+      "duration": "[Employment period, e.g., 'Jan 2020 - Present' or 'Jan 2020 - Dec 2022']",
+      "description": "[Job description and key achievements]"
+    }
+  ],
+  "education": [
+    {
+      "institution": "[Educational institution name]",
+      "degree": "[Degree type and field, e.g., 'Bachelor of Science in Computer Science']",
+      "year": "[Graduation year or period]",
+      "gpa": "[GPA if mentioned, otherwise empty string]"
+    }
+  ],
+  "skills": "[Comma-separated list of all skills mentioned in the resume]"
+}
+
+**EXTRACTION GUIDELINES:**
+1. **Personal Information**: Extract name, email, phone from contact section
+2. **Summary**: Use existing summary/objective, or create one based on experience (2-3 sentences)
+3. **Experience**: List all jobs in reverse chronological order
+   - Include company name, position, duration, and detailed description
+   - Combine responsibilities and achievements into description
+4. **Education**: List all educational qualifications
+   - Include institution, degree, graduation year
+   - Only include GPA if explicitly mentioned
+5. **Skills**: Extract all technical and soft skills mentioned throughout the resume
+   - Combine into a comma-separated string
+   - Include programming languages, tools, certifications, etc.
+
+**IMPORTANT:**
+- Return ONLY valid JSON
+- If any field is missing, use empty string "" for strings or empty array [] for arrays
+- Ensure all strings are properly escaped
+- Be comprehensive but accurate to the source material
+- If no summary exists, create a professional one based on the candidate's experience
+`;
+};
+
 // Main analysis function
 export const analyzeResume = async (resumeData, jobDescription) => {
   try {
@@ -229,6 +284,116 @@ export const optimizeResume = async (resumeData, jobDescription) => {
     }
 
     throw new AppError('Failed to optimize resume. Please try again.', 500);
+  }
+};
+
+// Resume parsing function
+export const parseResumeText = async (resumeText) => {
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new AppError('OpenAI API key is not configured', 500);
+    }
+
+    const prompt = createResumeParsingPrompt(resumeText);
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert resume parser. Extract resume information into the exact JSON format specified. Return only valid JSON.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.3, // Lower temperature for more consistent parsing
+      max_tokens: 2000,
+    });
+
+    const parseText = response.choices[0].message.content;
+    
+    // Parse the JSON response
+    let parsedResume;
+    try {
+      parsedResume = JSON.parse(parseText);
+    } catch (parseError) {
+      console.error('JSON parsing error:', parseError);
+      // Try to extract JSON from the response
+      const jsonMatch = parseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedResume = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new AppError('Invalid response format from OpenAI', 500);
+      }
+    }
+
+    // Validate required structure
+    const requiredFields = ['name', 'email', 'phone', 'summary', 'experience', 'education', 'skills'];
+    const missingFields = requiredFields.filter(field => !(field in parsedResume));
+    
+    if (missingFields.length > 0) {
+      console.error('Missing fields in parsed resume:', missingFields);
+      // Fill in missing fields with defaults
+      requiredFields.forEach(field => {
+        if (!(field in parsedResume)) {
+          if (field === 'experience' || field === 'education') {
+            parsedResume[field] = [];
+          } else {
+            parsedResume[field] = '';
+          }
+        }
+      });
+    }
+
+    // Ensure experience and education are arrays
+    if (!Array.isArray(parsedResume.experience)) {
+      parsedResume.experience = [];
+    }
+    if (!Array.isArray(parsedResume.education)) {
+      parsedResume.education = [];
+    }
+
+    // Validate experience objects
+    parsedResume.experience = parsedResume.experience.map(exp => ({
+      company: exp.company || '',
+      position: exp.position || '',
+      duration: exp.duration || '',
+      description: exp.description || ''
+    }));
+
+    // Validate education objects
+    parsedResume.education = parsedResume.education.map(edu => ({
+      institution: edu.institution || '',
+      degree: edu.degree || '',
+      year: edu.year || '',
+      gpa: edu.gpa || ''
+    }));
+
+    // Ensure skills is a string
+    if (typeof parsedResume.skills !== 'string') {
+      parsedResume.skills = '';
+    }
+
+    return parsedResume;
+
+  } catch (error) {
+    console.error('Resume Parsing Error:', error);
+    
+    if (error.code === 'insufficient_quota') {
+      throw new AppError('OpenAI quota exceeded. Please try again later.', 503);
+    }
+    
+    if (error.code === 'rate_limit_exceeded') {
+      throw new AppError('Too many requests. Please try again later.', 429);
+    }
+
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    throw new AppError('Failed to parse resume. Please try again.', 500);
   }
 };
 

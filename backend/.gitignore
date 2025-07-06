@@ -149,4 +149,10 @@ $RECYCLE.BIN/
 *.ntvs*
 *.njsproj
 *.sln
-*.sw? 
+*.sw?
+
+# Test directory for pdf-parse
+test/
+
+# Added from the original file
+# ... existing code ... 

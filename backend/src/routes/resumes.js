@@ -4,6 +4,8 @@ import { protect } from '../middleware/auth.js';
 import { uploadSingle } from '../middleware/upload.js';
 import { validate, resumeSchemas } from '../utils/validation.js';
 import { AppError } from '../middleware/errorHandler.js';
+import { extractTextFromFile, isSupportedFileType } from '../services/textExtraction.js';
+import { parseResumeText } from '../services/openai.js';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -39,6 +41,7 @@ router.get('/', protect, async (req, res, next) => {
         select: {
           id: true,
           title: true,
+          type: true,
           fileName: true,
           fileSize: true,
           isActive: true,
@@ -111,6 +114,80 @@ router.post('/', protect, validate(resumeSchemas.create), async (req, res, next)
         resume: newResume,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Upload resume file and parse with AI
+router.post('/upload', protect, uploadSingle('resume'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return next(new AppError('No file uploaded', 400));
+    }
+
+    const { title } = req.body;
+    if (!title || title.trim().length === 0) {
+      return next(new AppError('Resume title is required', 400));
+    }
+
+    // Validate file type
+    if (!isSupportedFileType(req.file.mimetype)) {
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return next(new AppError('Unsupported file type. Please upload PDF, DOC, DOCX, or TXT files.', 400));
+    }
+
+    try {
+      // Extract text from the uploaded file
+      console.log('Extracting text from file:', req.file.path);
+      const extractedText = await extractTextFromFile(req.file.path, req.file.mimetype);
+      
+      if (!extractedText || extractedText.trim().length === 0) {
+        throw new AppError('No text could be extracted from the file', 400);
+      }
+
+      console.log('Parsing resume with OpenAI...');
+      // Parse the extracted text using OpenAI
+      const parsedContent = await parseResumeText(extractedText);
+      
+      // Create resume in database with parsed content
+      const newResume = await prisma.resume.create({
+        data: {
+          title: title.trim(),
+          type: 'file',
+          content: parsedContent,
+          fileName: req.file.originalname,
+          filePath: req.file.filename,
+          fileSize: req.file.size,
+          userId: req.user.id,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          resume: newResume,
+        },
+        message: 'Resume uploaded and processed successfully',
+      });
+
+    } catch (error) {
+      // Clean up uploaded file if processing fails
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      if (error instanceof AppError) {
+        return next(error);
+      }
+      
+      console.error('Resume processing error:', error);
+      return next(new AppError('Failed to process resume file. Please try again or use the form option.', 500));
+    }
+
   } catch (error) {
     next(error);
   }
@@ -195,13 +272,9 @@ router.delete('/:id', protect, async (req, res, next) => {
   }
 });
 
-// Upload resume file
+// Legacy upload route for updating existing resume (keeping for compatibility)
 router.post('/:id/upload', protect, uploadSingle('resume'), async (req, res, next) => {
   try {
-    if (!req.file) {
-      return next(new AppError('No file uploaded', 400));
-    }
-
     // Check if resume exists and belongs to user
     const existingResume = await prisma.resume.findFirst({
       where: {
@@ -214,32 +287,74 @@ router.post('/:id/upload', protect, uploadSingle('resume'), async (req, res, nex
       return next(new AppError('Resume not found', 404));
     }
 
-    // Delete old file if exists
-    if (existingResume.filePath) {
-      const oldFilePath = join(__dirname, '../../uploads', existingResume.filePath);
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
+    if (!req.file) {
+      return next(new AppError('No file uploaded', 400));
     }
 
-    // Update resume with file information
-    const updatedResume = await prisma.resume.update({
-      where: {
-        id: req.params.id,
-      },
-      data: {
-        fileName: req.file.originalname,
-        filePath: req.file.filename,
-        fileSize: req.file.size,
-      },
-    });
+    // Validate file type
+    if (!isSupportedFileType(req.file.mimetype)) {
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return next(new AppError('Unsupported file type. Please upload PDF, DOC, DOCX, or TXT files.', 400));
+    }
 
-    res.status(200).json({
-      success: true,
-      data: {
-        resume: updatedResume,
-      },
-    });
+    try {
+      // Extract text from the uploaded file
+      const extractedText = await extractTextFromFile(req.file.path, req.file.mimetype);
+      
+      if (!extractedText || extractedText.trim().length === 0) {
+        throw new AppError('No text could be extracted from the file', 400);
+      }
+
+      // Parse the extracted text using OpenAI
+      const parsedContent = await parseResumeText(extractedText);
+
+      // Delete old file if exists
+      if (existingResume.filePath) {
+        const oldFilePath = join(__dirname, '../../uploads', existingResume.filePath);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      }
+
+      // Update resume with new file and parsed content
+      const updatedResume = await prisma.resume.update({
+        where: {
+          id: req.params.id,
+        },
+        data: {
+          type: 'file',
+          content: parsedContent,
+          fileName: req.file.originalname,
+          filePath: req.file.filename,
+          fileSize: req.file.size,
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        data: {
+          resume: updatedResume,
+        },
+        message: 'Resume updated and processed successfully',
+      });
+
+    } catch (error) {
+      // Clean up uploaded file if processing fails
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      if (error instanceof AppError) {
+        return next(error);
+      }
+      
+      console.error('Resume processing error:', error);
+      return next(new AppError('Failed to process resume file. Please try again.', 500));
+    }
+
   } catch (error) {
     next(error);
   }
