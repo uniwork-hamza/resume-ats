@@ -9,6 +9,7 @@ import ResumeUpload from './components/ResumeUpload';
 import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
 import Results from './components/Results';
+import ResumeSettings from './components/Settings';
 
 interface AnalysisData {
   overallScore: number;
@@ -394,6 +395,7 @@ function AppContent() {
 
   return (
     <Routes>
+      <Route path="/resume" element={isAuthenticated ? <ResumeSettings /> : <Navigate to="/auth/signin?redirect=/resume" />} />
       <Route path="/" element={<LandingScreen />} />
       <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />

@@ -23,7 +23,7 @@ Please provide a detailed analysis in the following JSON format exactly as speci
 
 {
   "overallScore": [number between 1-100 - overall match score],
-  "keywordMatch": [number between 1-100 - keyword alignment score],
+  "keywordMatch": [number between 1-100 - keyword alignment score, make sure to score according to the keywords data you will get in the keywordData field],
   "skillsMatch": [number between 1-100 - skills alignment score],
   "experienceMatch": [number between 1-100 - experience relevance score],
   "formatScore": [number between 1-100 - resume format and ATS compatibility score],
