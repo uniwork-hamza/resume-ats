@@ -112,8 +112,8 @@ prisma/generated/
 # Test files
 *.test.js
 *.spec.js
-test/
-tests/
+# test/
+# tests/
 
 # Backup files
 *.backup
