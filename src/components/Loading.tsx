@@ -123,18 +123,6 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
     performAnalysis();
   }, []); // Empty dependency array - execute only once
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      console.log('Loading component unmounting...');
-      // Only clear if this instance was the one executing
-      const currentExecution = localStorage.getItem(ANALYSIS_EXECUTION_KEY);
-      if (currentExecution === analysisIdRef.current) {
-        localStorage.removeItem(ANALYSIS_EXECUTION_KEY);
-      }
-    };
-  }, []);
-
   const handleRetry = () => {
     console.log('Retrying analysis...');
     setError(null);
@@ -232,10 +220,10 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
                 </div>
                 <div className="flex-1">
                   <p className={`font-medium ${
-                    isCompleted 
-                      ? 'text-green-700' 
-                      : isActive 
-                      ? 'text-blue-700' 
+                    isCompleted
+                      ? 'text-green-700'
+                      : isActive
+                      ? 'text-blue-700'
                       : 'text-gray-600'
                   }`}>
                     {step.text}
@@ -251,12 +239,6 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
               </div>
             );
           })}
-        </div>
-
-        <div className="mt-12 text-center">
-          <p className="text-gray-500">
-            {isAnalyzing ? 'Performing AI analysis...' : 'This usually takes about 30-45 seconds...'}
-          </p>
         </div>
       </div>
     </div>

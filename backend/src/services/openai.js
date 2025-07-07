@@ -201,7 +201,7 @@ export const analyzeResume = async (resumeData, jobDescription) => {
     const prompt = createAnalysisPrompt(resumeData, jobDescription);
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4', // or 'gpt-3.5-turbo' for cost efficiency
+      model: 'o4-mini-2025-04-16', // or 'gpt-3.5-turbo' for cost efficiency
       messages: [
         {
           role: 'system',
@@ -275,7 +275,7 @@ export const optimizeResume = async (resumeData, jobDescription) => {
     const prompt = createOptimizationPrompt(resumeData, jobDescription);
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'o4-mini-2025-04-16',
       messages: [
         {
           role: 'system',
@@ -328,7 +328,7 @@ export const parseResumeText = async (resumeText) => {
     const prompt = createResumeParsingPrompt(resumeText);
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'o4-mini-2025-04-16',
       messages: [
         {
           role: 'system',

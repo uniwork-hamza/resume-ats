@@ -214,22 +214,22 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
 
             {/* Missing Keywords */}
             {missingKeywords.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
-                <p className="text-gray-600 mb-4">
-                  Consider adding these important keywords from the job description to improve your ATS score:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {missingKeywords.map((keyword, index) => (
-                    <span
-                      key={index}
-                      className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
-                    >
-                      {keyword}
-                    </span>
-                  ))}
-                </div>
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
+              <p className="text-gray-600 mb-4">
+                Consider adding these important keywords from the job description to improve your ATS score:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {missingKeywords.map((keyword, index) => (
+                  <span
+                    key={index}
+                    className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
+                  >
+                    {keyword}
+                  </span>
+                ))}
               </div>
+            </div>
             )}
           </div>
 
@@ -237,38 +237,38 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
           <div className="space-y-6">
             {/* Strengths */}
             {strengths.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                  <span>Strengths</span>
-                </h3>
-                <div className="space-y-3">
-                  {strengths.map((strength, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">{strength}</p>
-                    </div>
-                  ))}
-                </div>
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+                <span>Strengths</span>
+              </h3>
+              <div className="space-y-3">
+                {strengths.map((strength, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-gray-700">{strength}</p>
+                  </div>
+                ))}
               </div>
+            </div>
             )}
 
             {/* Areas for Improvement */}
             {improvements.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-                  <AlertTriangle className="h-6 w-6 text-orange-600" />
-                  <span>Areas for Improvement</span>
-                </h3>
-                <div className="space-y-3">
-                  {improvements.map((improvement, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">{improvement}</p>
-                    </div>
-                  ))}
-                </div>
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <AlertTriangle className="h-6 w-6 text-orange-600" />
+                <span>Areas for Improvement</span>
+              </h3>
+              <div className="space-y-3">
+                {improvements.map((improvement, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-gray-700">{improvement}</p>
+                  </div>
+                ))}
               </div>
+            </div>
             )}
 
             {/* Action Buttons */}

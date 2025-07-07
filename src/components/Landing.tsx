@@ -100,12 +100,12 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 </button>
               </div>
             ) : (
-              <button
-                onClick={onGetStarted}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                Get Started Free
-              </button>
+            <button
+              onClick={onGetStarted}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Get Started Free
+            </button>
             )}
           </div>
         </div>
@@ -132,10 +132,10 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 </>
               ) : (
                 <>
-                  Your Resume's
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-gradient">
-                    Secret Weapon
-                  </span>
+              Your Resume's
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-gradient">
+                Secret Weapon
+              </span>
                 </>
               )}
             </h1>
@@ -168,17 +168,17 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 </div>
               ) : (
                 <>
-                  <button
-                    onClick={onGetStarted}
-                    className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
-                  >
-                    <span>Start Free Analysis</span>
-                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                  <div className="flex items-center space-x-2 text-gray-300">
-                    <CheckCircle className="h-5 w-5 text-green-400" />
-                    <span>No credit card required</span>
-                  </div>
+              <button
+                onClick={onGetStarted}
+                className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
+              >
+                <span>Start Free Analysis</span>
+                <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <div className="flex items-center space-x-2 text-gray-300">
+                <CheckCircle className="h-5 w-5 text-green-400" />
+                <span>No credit card required</span>
+              </div>
                 </>
               )}
             </div>

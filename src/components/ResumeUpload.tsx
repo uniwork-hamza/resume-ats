@@ -221,10 +221,10 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
 
   const removeExperience = (index: number) => {
     if (formData.experience.length > 1) {
-      setFormData(prev => ({
-        ...prev,
-        experience: prev.experience.filter((_, i) => i !== index)
-      }));
+    setFormData(prev => ({
+      ...prev,
+      experience: prev.experience.filter((_, i) => i !== index)
+    }));
     }
   };
 
@@ -246,10 +246,10 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
 
   const removeEducation = (index: number) => {
     if (formData.education.length > 1) {
-      setFormData(prev => ({
-        ...prev,
-        education: prev.education.filter((_, i) => i !== index)
-      }));
+    setFormData(prev => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index)
+    }));
     }
   };
 
@@ -546,22 +546,22 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
 
   // Form upload method
   if (uploadMethod === 'form') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <button
-            onClick={() => setUploadMethod(null)}
-            className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <button
+          onClick={() => setUploadMethod(null)}
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
             disabled={isLoading}
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back</span>
-          </button>
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back</span>
+        </button>
 
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Resume Information</h1>
             <p className="text-xl text-gray-600">Fill out your resume details below</p>
-          </div>
+        </div>
 
           {/* Error/Success Messages */}
           {error && (
@@ -584,47 +584,47 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
 
           <form onSubmit={handleFormSubmit} className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
             {/* Personal Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Full Name *
                 </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   disabled={isLoading}
-                />
-              </div>
+                  />
+                </div>
               
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address *
                 </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   disabled={isLoading}
-                />
-              </div>
+                  />
+                </div>
               
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Phone Number *
                 </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   disabled={isLoading}
-                />
+                  />
               </div>
             </div>
 
@@ -814,8 +814,8 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
               >
                 Cancel
               </button>
-              <button
-                type="submit"
+            <button
+              type="submit"
                 disabled={isLoading}
                 className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -826,16 +826,16 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
                   </>
                 ) : (
                   <>
-                    <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-5 w-5" />
                     <span>Create Resume</span>
                   </>
                 )}
-              </button>
+            </button>
             </div>
           </form>
-        </div>
       </div>
-    );
+    </div>
+  );
   }
 
   return null;

@@ -77,7 +77,7 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
       }
       
       // If successful, call the onLogin callback
-      onLogin(formData.email);
+    onLogin(formData.email);
     } catch (error) {
       // Error is handled by the auth context
       console.error('Authentication error:', error);

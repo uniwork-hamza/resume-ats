@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { resumeApi, Resume, Analysis } from './services/api';
 import Landing from './components/Landing';
@@ -10,6 +10,7 @@ import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
 import Results from './components/Results';
 import ResumeSettings from './components/Settings';
+import { analysisApi } from './services/api';
 
 interface AnalysisData {
   overallScore: number;
@@ -324,20 +325,40 @@ function AppContent() {
           console.log('App: Received analysis completion');
           const transformedData = transformAnalysisData(analysisData);
           setAnalysisResults(transformedData);
-          goTo('/results');
+          goTo(`/results/${analysisData.id}`);
         }}
       />
     );
   }
 
-  function ResultsScreen() {
-    const { goTo } = useNav();
-    
-    if (!analysisResults) {
-      goTo('/dashboard');
-      return null;
-    }
-    
+  function AnalysisScreen() {
+    const { id } = useParams();
+    const [data, setData] = useState<AnalysisData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    useEffect(() => {
+      (async () => {
+        try {
+          const res = await analysisApi.getAnalysis(id!);
+          if (res.success && res.data?.analysis) {
+            const a = res.data.analysis;
+            setData({
+              overallScore: a.overallScore,
+              keywordMatch: a.keywordMatch,
+              skillsMatch: a.skillsMatch,
+              experienceMatch: a.experienceMatch,
+              formatScore: a.formatScore,
+              strengths: a.strengths,
+              improvements: a.improvements,
+              missingKeywords: a.missingKeywords,
+              keywordData: a.keywordData,
+              detailedAnalysis: a.detailedAnalysis
+            });
+          }
+        } catch (error) { console.error(error); }
+        setLoading(false);
+      })();
+    }, [id]);
     const handleStartNewTest = async () => {
       try {
         // Check if user has existing resume
@@ -359,20 +380,20 @@ function AppContent() {
             setResumeData({ ...existingResume.content, id: existingResume.id, title: existingResume.title });
             setJobDescription('');
             setAnalysisResults(null);
-            goTo('/job-description');
+            navigate('/job-description');
           } else {
             // No resume, go to resume upload
             setResumeData(null);
             setJobDescription('');
             setAnalysisResults(null);
-            goTo('/resume-upload');
+            navigate('/resume-upload');
           }
         } else {
           // No resume, go to resume upload
           setResumeData(null);
           setJobDescription('');
           setAnalysisResults(null);
-          goTo('/resume-upload');
+          navigate('/resume-upload');
         }
       } catch (error) {
         console.error('Error checking resume:', error);
@@ -380,17 +401,12 @@ function AppContent() {
         setResumeData(null);
         setJobDescription('');
         setAnalysisResults(null);
-        goTo('/resume-upload');
+        navigate('/resume-upload');
       }
     };
-
-    return (
-      <Results
-        analysisData={analysisResults}
-        onBack={() => goTo('/dashboard')}
-        onStartNewTest={handleStartNewTest}
-      />
-    );
+    if (loading) return <div>Loading analysis...</div>;
+    if (!data) return <Navigate to="/dashboard" />;
+    return <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />;
   }
 
   return (
@@ -403,7 +419,7 @@ function AppContent() {
       <Route path="/resume-upload" element={isAuthenticated ? <ResumeUploadScreen /> : <Navigate to="/auth/signin?redirect=/resume-upload" />} />
       <Route path="/job-description" element={isAuthenticated && resumeData ? <JobDescriptionScreen /> : <Navigate to="/auth/signin?redirect=/job-description" />} />
       <Route path="/loading" element={isAuthenticated && resumeData && jobDescription ? <LoadingScreen /> : <Navigate to="/auth/signin?redirect=/loading" />} />
-      <Route path="/results" element={isAuthenticated && resumeData && jobDescription && analysisResults ? <ResultsScreen /> : <Navigate to="/auth/signin?redirect=/results" />} />
+      <Route path="/results/:id" element={isAuthenticated ? <AnalysisScreen /> : <Navigate to="/auth/signin?redirect=/results" />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
