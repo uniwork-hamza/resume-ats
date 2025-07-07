@@ -251,6 +251,7 @@ function AppContent() {
 
   function JobDescriptionScreen() {
     const { goTo } = useNav();
+    const navigate = useNavigate();
     return (
       <JobDescription
         onNext={(desc) => { 
@@ -258,7 +259,7 @@ function AppContent() {
           setAnalysisResults(null);
           goTo('/loading'); 
         }}
-        onBack={() => goTo('/resume-upload')}
+        onBack={() => navigate(-1)}
       />
     );
   }
