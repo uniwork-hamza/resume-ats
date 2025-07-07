@@ -212,8 +212,6 @@ export const analyzeResume = async (resumeData, jobDescription) => {
           content: prompt,
         },
       ],
-      temperature: 0.7,
-      max_tokens: 2000,
     });
 
     const analysisText = response.choices[0].message.content;
@@ -286,8 +284,6 @@ export const optimizeResume = async (resumeData, jobDescription) => {
           content: prompt,
         },
       ],
-      temperature: 0.7,
-      max_tokens: 1500,
     });
 
     const optimizationText = response.choices[0].message.content;
@@ -339,8 +335,6 @@ export const parseResumeText = async (resumeText) => {
           content: prompt,
         },
       ],
-      temperature: 0.3, // Lower temperature for more consistent parsing
-      max_tokens: 2000,
     });
 
     const parseText = response.choices[0].message.content;
