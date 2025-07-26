@@ -123,6 +123,16 @@ export interface Analysis {
   userId: string;
   resumeId: string;
   jobDescId: string;
+  
+  // Nested objects returned by backend when using include
+  resume?: {
+    id: string;
+    title: string;
+  };
+  jobDescription?: {
+    id: string;
+    title: string;
+  };
 }
 
 export interface PaginationData {

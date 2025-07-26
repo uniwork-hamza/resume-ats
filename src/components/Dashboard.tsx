@@ -99,8 +99,8 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
                         <FileText className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{analysis.jobDescId}</h3>
-                        <p className="text-gray-600">{analysis.resumeId}</p>
+                        <h3 className="font-semibold text-gray-900">{analysis.jobDescription?.title || 'Unknown Job'}</h3>
+                        <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-6">

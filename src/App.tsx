@@ -62,6 +62,7 @@ function AppContent() {
   const [jobDescription, setJobDescription] = useState('');
   const [analysisResults, setAnalysisResults] = useState<AnalysisData | null>(null);
   const [parsedResumeData, setParsedResumeData] = useState<{ parsedContent: ResumeFormData; fileName: string } | null>(null);
+  const [isNavigatingFromReview, setIsNavigatingFromReview] = useState(false);
 
   const useNav = () => {
     const navigate = useNavigate();
@@ -271,9 +272,13 @@ function AppContent() {
   function ReviewResumeScreen() {
     const { goTo } = useNav();
     
-    if (!parsedResumeData) {
-      // If no parsed data, redirect to upload
+    if (!parsedResumeData && !isNavigatingFromReview) {
+      // If no parsed data and not in the middle of navigation, redirect to upload
       goTo('/resume-upload');
+      return null;
+    }
+    
+    if (!parsedResumeData) {
       return null;
     }
     
@@ -293,11 +298,13 @@ function AppContent() {
             updatedAt: new Date().toISOString()
           };
           setResumeData(fullResumeData);
-          setParsedResumeData(null); // Clear parsed data
           setAnalysisResults(null);
+          setIsNavigatingFromReview(true);
+          setParsedResumeData(null); // Clear parsed data
           goTo('/job-description');
         }}
         onBack={() => {
+          setIsNavigatingFromReview(false); // Reset navigation flag
           setParsedResumeData(null); // Clear parsed data when going back
           goTo('/resume-upload');
         }}
@@ -308,6 +315,12 @@ function AppContent() {
   function JobDescriptionScreen() {
     const { goTo } = useNav();
     const navigate = useNavigate();
+    
+    // Reset navigation flag when we successfully reach job description
+    if (isNavigatingFromReview) {
+      setIsNavigatingFromReview(false);
+    }
+    
     return (
       <JobDescription
         onNext={(desc) => { 
@@ -390,32 +403,41 @@ function AppContent() {
 
   function AnalysisScreen() {
     const { id } = useParams();
-    const [data, setData] = useState<AnalysisData | null>(null);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    
+    // Use existing analysis results if available, otherwise fetch from API
+    const [data, setData] = useState<AnalysisData | null>(analysisResults);
+    const [loading, setLoading] = useState(!analysisResults);
+    
     useEffect(() => {
-      (async () => {
-        try {
-          const res = await analysisApi.getAnalysis(id!);
-          if (res.success && res.data?.analysis) {
-            const a = res.data.analysis;
-            setData({
-              overallScore: a.overallScore,
-              keywordMatch: a.keywordMatch,
-              skillsMatch: a.skillsMatch,
-              experienceMatch: a.experienceMatch,
-              formatScore: a.formatScore,
-              strengths: a.strengths,
-              improvements: a.improvements,
-              missingKeywords: a.missingKeywords,
-              keywordData: a.keywordData,
-              detailedAnalysis: a.detailedAnalysis
-            });
+      // Only fetch from API if we don't have analysis results already
+      if (!analysisResults) {
+        (async () => {
+          try {
+            const res = await analysisApi.getAnalysis(id!);
+            if (res.success && res.data?.analysis) {
+              const a = res.data.analysis;
+              setData({
+                overallScore: a.overallScore,
+                keywordMatch: a.keywordMatch,
+                skillsMatch: a.skillsMatch,
+                experienceMatch: a.experienceMatch,
+                formatScore: a.formatScore,
+                strengths: a.strengths,
+                improvements: a.improvements,
+                missingKeywords: a.missingKeywords,
+                keywordData: a.keywordData,
+                detailedAnalysis: a.detailedAnalysis
+              });
+            }
+          } catch (error) { 
+            console.error(error); 
           }
-        } catch (error) { console.error(error); }
-        setLoading(false);
-      })();
-    }, [id]);
+          setLoading(false);
+        })();
+      }
+    }, [id, analysisResults]);
+    
     const handleStartNewTest = async () => {
       try {
         // Check if user has existing resume
@@ -461,8 +483,9 @@ function AppContent() {
         navigate('/resume-upload');
       }
     };
+    
     if (loading) return <div>Loading analysis...</div>;
-    if (!data) return <Navigate to="/dashboard" />;
+    if (!data) return <div>Analysis not found. Please try again.</div>;
     return <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />;
   }
 
