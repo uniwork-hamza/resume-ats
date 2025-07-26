@@ -355,6 +355,27 @@ export const resumeApi = {
     return response.json();
   },
 
+  // Parse resume file without saving (for review flow)
+  parseResume: async (file: File): Promise<ApiResponse<{ parsedContent: ResumeContent; fileName: string; fileSize: number }>> => {
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    const response = await fetch(`${API_BASE_URL}/resumes/parse`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${TokenManager.getToken()}`
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Parse failed');
+    }
+
+    return response.json();
+  },
+
   async downloadResume(id: string): Promise<Blob> {
     const token = TokenManager.getToken();
     const response = await fetch(`${API_BASE_URL}/resumes/${id}/download`, {

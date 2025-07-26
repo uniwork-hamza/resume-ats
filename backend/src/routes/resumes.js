@@ -110,6 +110,69 @@ router.post('/', protect, validate(resumeSchemas.create), async (req, res, next)
   }
 });
 
+// Parse resume file without saving to database (for review flow)
+router.post('/parse', protect, uploadSingle('resume'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return next(new AppError('No file uploaded', 400));
+    }
+
+    // Validate file type
+    if (!isSupportedFileType(req.file.mimetype)) {
+      // Clean up uploaded file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return next(new AppError('Unsupported file type. Please upload PDF, DOC, DOCX, or TXT files.', 400));
+    }
+
+    try {
+      // Extract text from the uploaded file
+      console.log('Extracting text from file:', req.file.path);
+      const extractedText = await extractTextFromFile(req.file.path, req.file.mimetype);
+      
+      if (!extractedText || extractedText.trim().length === 0) {
+        throw new AppError('No text could be extracted from the file', 400);
+      }
+
+      console.log('Parsing resume with OpenAI...');
+      // Parse the extracted text using OpenAI
+      const parsedContent = await parseResumeText(extractedText);
+      
+      // Clean up uploaded file after processing
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          parsedContent,
+          fileName: req.file.originalname,
+          fileSize: req.file.size,
+        },
+        message: 'Resume parsed successfully',
+      });
+
+    } catch (error) {
+      // Clean up uploaded file if processing fails
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      if (error instanceof AppError) {
+        return next(error);
+      }
+      
+      console.error('Resume processing error:', error);
+      return next(new AppError('Failed to process resume file. Please try again.', 500));
+    }
+
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Upload resume file and parse with AI (single resume per user)
 router.post('/upload', protect, uploadSingle('resume'), async (req, res, next) => {
   try {

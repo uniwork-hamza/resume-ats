@@ -45,7 +45,7 @@ export default function Header() {
               onClick={() => setMenuOpen(open => !open)}
               className="flex items-center space-x-1 text-gray-600 hover:text-gray-800 focus:outline-none"
             >
-              <span>Welcome, {user?.email?.split('@')[0] || 'User'}</span>
+              <span>{user?.email?.split('@')[0] || 'User'}</span>
               <ChevronDown className="h-4 w-4" />
             </button>
             {menuOpen && (

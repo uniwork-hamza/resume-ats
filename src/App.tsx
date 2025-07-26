@@ -10,6 +10,7 @@ import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
 import Results from './components/Results';
 import ResumeSettings from './components/Settings';
+import ReviewResume from './components/ReviewResume';
 import { analysisApi } from './services/api';
 
 interface AnalysisData {
@@ -35,11 +36,32 @@ interface AnalysisData {
   };
 }
 
+interface ResumeFormData {
+  name: string;
+  email: string;
+  phone: string;
+  summary: string;
+  experience: Array<{
+    company: string;
+    position: string;
+    duration: string;
+    description: string;
+  }>;
+  education: Array<{
+    institution: string;
+    degree: string;
+    year: string;
+    gpa: string;
+  }>;
+  skills: string;
+}
+
 function AppContent() {
-  const { isAuthenticated, user, logout, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [resumeData, setResumeData] = useState<Resume | null>(null);
   const [jobDescription, setJobDescription] = useState('');
   const [analysisResults, setAnalysisResults] = useState<AnalysisData | null>(null);
+  const [parsedResumeData, setParsedResumeData] = useState<{ parsedContent: ResumeFormData; fileName: string } | null>(null);
 
   const useNav = () => {
     const navigate = useNavigate();
@@ -236,7 +258,49 @@ function AppContent() {
           setAnalysisResults(null);
           goTo('/job-description'); 
         }}
+        onParseComplete={(parsedData) => {
+          // Store parsed data and navigate to review
+          setParsedResumeData(parsedData);
+          goTo('/review-resume');
+        }}
         onBack={() => goTo('/dashboard')}
+      />
+    );
+  }
+
+  function ReviewResumeScreen() {
+    const { goTo } = useNav();
+    
+    if (!parsedResumeData) {
+      // If no parsed data, redirect to upload
+      goTo('/resume-upload');
+      return null;
+    }
+    
+    return (
+      <ReviewResume
+        parsedData={parsedResumeData.parsedContent}
+        fileName={parsedResumeData.fileName}
+        onNext={(resumeData) => {
+          // Convert the response to proper Resume format
+          const fullResumeData: Resume = {
+            id: resumeData.id,
+            title: resumeData.title,
+            type: 'file',
+            content: resumeData.content,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          setResumeData(fullResumeData);
+          setParsedResumeData(null); // Clear parsed data
+          setAnalysisResults(null);
+          goTo('/job-description');
+        }}
+        onBack={() => {
+          setParsedResumeData(null); // Clear parsed data when going back
+          goTo('/resume-upload');
+        }}
       />
     );
   }
@@ -410,6 +474,7 @@ function AppContent() {
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />
       <Route path="/dashboard" element={isAuthenticated ? <DashboardScreen /> : <Navigate to="/auth/signin?redirect=/dashboard" />} />
       <Route path="/resume-upload" element={isAuthenticated ? <ResumeUploadScreen /> : <Navigate to="/auth/signin?redirect=/resume-upload" />} />
+      <Route path="/review-resume" element={isAuthenticated && parsedResumeData ? <ReviewResumeScreen /> : <Navigate to="/resume-upload" />} />
       <Route path="/job-description" element={isAuthenticated && resumeData ? <JobDescriptionScreen /> : <Navigate to="/auth/signin?redirect=/job-description" />} />
       <Route path="/loading" element={isAuthenticated && resumeData && jobDescription ? <LoadingScreen /> : <Navigate to="/auth/signin?redirect=/loading" />} />
       <Route path="/results/:id" element={isAuthenticated ? <AnalysisScreen /> : <Navigate to="/auth/signin?redirect=/results" />} />

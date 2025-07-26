@@ -7,6 +7,7 @@ import Header from './Header';
 interface ResumeUploadProps {
   onNext: (resumeData: ResumeFormData | { id: string; title: string; content: ResumeFormData } | null) => void;
   onBack: () => void;
+  onParseComplete?: (parsedData: { parsedContent: ResumeFormData; fileName: string }) => void;
 }
 
 interface ResumeFormData {
@@ -29,7 +30,7 @@ interface ResumeFormData {
   skills: string;
 }
 
-export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
+export default function ResumeUpload({ onNext, onBack, onParseComplete }: ResumeUploadProps) {
   const { user } = useAuth();
   const [uploadMethod, setUploadMethod] = useState<'upload' | 'form' | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -194,20 +195,35 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
     clearMessages();
 
     try {
-      const title = uploadedFile.name.replace(/\.[^/.]+$/, '') + " Resume";
-      
-      const result = await resumeApi.uploadResume(uploadedFile, title);
+      if (onParseComplete) {
+        // New flow: Parse only and go to review
+        const result = await resumeApi.parseResume(uploadedFile);
 
-      if (result.success && result.data) {
-        setSuccess('Resume uploaded and processed successfully!');
-        setTimeout(() => {
-          onNext(result.data!.resume);
-        }, 1000);
+        if (result.success && result.data) {
+          setSuccess('Resume parsed successfully!');
+          setTimeout(() => {
+            onParseComplete(result.data!);
+          }, 1000);
+        } else {
+          throw new Error(result.error || 'Failed to parse resume');
+        }
       } else {
-        throw new Error(result.error || 'Failed to upload resume');
+        // Old flow: Upload and save directly
+        const title = uploadedFile.name.replace(/\.[^/.]+$/, '') + " Resume";
+        
+        const result = await resumeApi.uploadResume(uploadedFile, title);
+
+        if (result.success && result.data) {
+          setSuccess('Resume uploaded and processed successfully!');
+          setTimeout(() => {
+            onNext(result.data!.resume);
+          }, 1000);
+        } else {
+          throw new Error(result.error || 'Failed to upload resume');
+        }
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to upload resume');
+      setError(error instanceof Error ? error.message : 'Failed to process resume');
     } finally {
       setIsLoading(false);
     }
@@ -520,7 +536,7 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
                     ) : (
                       <>
                         <Upload className="h-5 w-5" />
-                        <span>Upload & Process</span>
+                        <span>{onParseComplete ? 'Parse & Review' : 'Upload & Process'}</span>
                       </>
                     )}
                   </button>
@@ -539,7 +555,10 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
                   <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                     <p className="text-blue-700 font-medium mb-2">🤖 AI Processing in Progress</p>
                     <p className="text-blue-600 text-sm">
-                      Our AI is extracting and organizing your resume information. This may take 15-30 seconds.
+                      {onParseComplete 
+                        ? 'Our AI is extracting and organizing your resume information for review. This may take 15-30 seconds.'
+                        : 'Our AI is extracting and organizing your resume information. This may take 15-30 seconds.'
+                      }
                     </p>
                   </div>
                 )}
