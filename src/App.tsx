@@ -11,7 +11,9 @@ import Loading from './components/Loading';
 import Results from './components/Results';
 import ResumeSettings from './components/Settings';
 import ReviewResume from './components/ReviewResume';
+import Header from './components/Header';
 import { analysisApi } from './services/api';
+import { Loader2 } from 'lucide-react';
 
 interface AnalysisData {
   overallScore: number;
@@ -484,8 +486,31 @@ function AppContent() {
       }
     };
     
-    if (loading) return <div>Loading analysis...</div>;
-    if (!data) return <div>Analysis not found. Please try again.</div>;
+    if (loading) {
+      return (
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600">Loading analysis...</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (!data) {
+      return (
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
+            <div className="text-center">
+              <p className="text-gray-600">Analysis not found. Please try again.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />;
   }
 
