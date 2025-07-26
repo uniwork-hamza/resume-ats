@@ -26,7 +26,7 @@ router.get('/dashboard', protect, async (req, res, next) => {
         where: { userId: req.user.id },
         _count: true,
         _avg: {
-          matchScore: true,
+          overallScore: true,
         },
       }),
     ]);
@@ -73,7 +73,7 @@ router.get('/dashboard', protect, async (req, res, next) => {
           },
           analyses: {
             total: analysisStats._count,
-            avgMatchScore: analysisStats._avg.matchScore || 0,
+            avgOverallScore: analysisStats._avg.overallScore || 0,
           },
         },
         recentActivities,
