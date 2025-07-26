@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award } from 'lucide-react';
+import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award, BookOpen, Lightbulb, Brain, GraduationCap, Briefcase } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Header from './Header';
@@ -20,10 +20,42 @@ interface AnalysisData {
     percentage: number;
   }>;
   detailedAnalysis?: {
-    experienceMatch: string;
+    overallFit: string;
     skillsMatch: string;
     educationMatch: string;
-    overallFit: string;
+    experienceMatch: string;
+  };
+  recommendations?: {
+    experienceGaps: string[];
+    skillDevelopment: string[];
+    resumeImprovements: string[];
+  };
+  aiResponse?: {
+    strengths: string[];
+    improvements: string[];
+    keywordMatch: number;
+    skillsMatch: number;
+    experienceMatch: number;
+    formatScore: number;
+    overallScore: number;
+    missingKeywords: string[];
+    keywordData: Array<{
+      category: string;
+      matched: number;
+      total: number;
+      percentage: number;
+    }>;
+    detailedAnalysis: {
+      overallFit: string;
+      skillsMatch: string;
+      educationMatch: string;
+      experienceMatch: string;
+    };
+    recommendations: {
+      experienceGaps: string[];
+      skillDevelopment: string[];
+      resumeImprovements: string[];
+    };
   };
 }
 
@@ -43,7 +75,9 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
     strengths,
     improvements,
     missingKeywords,
-    keywordData
+    keywordData,
+    detailedAnalysis,
+    recommendations
   } = analysisData;
 
   const getScoreColor = (score: number) => {
@@ -221,6 +255,120 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 </div>
               </div>
             </div>
+
+            {/* Detailed Analysis Insights */}
+            {detailedAnalysis && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                  <Brain className="h-6 w-6 text-purple-600" />
+                  <span>Deep Analysis Insights</span>
+                </h2>
+                
+                <div className="space-y-6">
+                  {/* Overall Fit */}
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Target className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-blue-900">Overall Fit Assessment</h3>
+                    </div>
+                    <p className="text-blue-800 text-sm leading-relaxed">{detailedAnalysis.overallFit}</p>
+                  </div>
+
+                  {/* Skills Analysis */}
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Award className="h-5 w-5 text-green-600" />
+                      <h3 className="font-semibold text-green-900">Skills Assessment</h3>
+                    </div>
+                    <p className="text-green-800 text-sm leading-relaxed">{detailedAnalysis.skillsMatch}</p>
+                  </div>
+
+                  {/* Experience Analysis */}
+                  <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Briefcase className="h-5 w-5 text-indigo-600" />
+                      <h3 className="font-semibold text-indigo-900">Experience Assessment</h3>
+                    </div>
+                    <p className="text-indigo-800 text-sm leading-relaxed">{detailedAnalysis.experienceMatch}</p>
+                  </div>
+
+                  {/* Education Analysis */}
+                  <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <GraduationCap className="h-5 w-5 text-purple-600" />
+                      <h3 className="font-semibold text-purple-900">Education Assessment</h3>
+                    </div>
+                    <p className="text-purple-800 text-sm leading-relaxed">{detailedAnalysis.educationMatch}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Comprehensive Recommendations */}
+            {recommendations && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-600" />
+                  <span>Professional Recommendations</span>
+                </h2>
+                
+                <div className="space-y-6">
+                  {/* Experience Gaps */}
+                  {recommendations.experienceGaps && recommendations.experienceGaps.length > 0 && (
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <AlertTriangle className="h-5 w-5 text-red-600" />
+                        <h3 className="font-semibold text-red-900">Experience Gaps to Address</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.experienceGaps.map((gap, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-red-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{gap}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Skill Development */}
+                  {recommendations.skillDevelopment && recommendations.skillDevelopment.length > 0 && (
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <BookOpen className="h-5 w-5 text-orange-600" />
+                        <h3 className="font-semibold text-orange-900">Skill Development Suggestions</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.skillDevelopment.map((skill, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-orange-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-orange-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{skill}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Resume Improvements */}
+                  {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                        <h3 className="font-semibold text-blue-900">Resume Enhancement Tips</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.resumeImprovements.map((improvement, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-blue-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-blue-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{improvement}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Keyword Analysis */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
