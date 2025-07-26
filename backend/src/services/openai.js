@@ -19,7 +19,7 @@ Title: ${jobDescription.title}
 ${jobDescription.description}
 
 **ANALYSIS REQUIREMENTS:**
-Please provide a detailed analysis in the following JSON format exactly as specified:
+Please provide a detailed Semantic Analysis in the following JSON format exactly as specified:
 
 {
   "overallScore": [number between 1-100 - overall match score],
