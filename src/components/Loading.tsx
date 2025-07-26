@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Target, CheckCircle, Clock, BarChart3, AlertCircle } from 'lucide-react';
 import { analysisApi, jobApi, Resume, Analysis } from '../services/api';
+import Header from './Header';
 
 interface LoadingProps {
   resumeData: Resume;
@@ -139,7 +140,9 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <Header />
+        <div className="flex items-center justify-center px-6" style={{ minHeight: 'calc(100vh - 80px)' }}>
         <div className="max-w-2xl w-full text-center">
           <div className="bg-red-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
             <AlertCircle className="h-10 w-10 text-red-600" />
@@ -153,12 +156,15 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
             Try Again
           </button>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <Header />
+      <div className="flex items-center justify-center px-6" style={{ minHeight: 'calc(100vh - 80px)' }}>
       <div className="max-w-2xl w-full">
         <div className="text-center mb-12">
           <div className="relative inline-block mb-6">
@@ -240,6 +246,7 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
             );
           })}
         </div>
+      </div>
       </div>
     </div>
   );

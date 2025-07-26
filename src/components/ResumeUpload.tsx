@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Upload, FileText, X, ArrowLeft, ArrowRight, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { resumeApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import Header from './Header';
 
 interface ResumeUploadProps {
   onNext: (resumeData: ResumeFormData | { id: string; title: string; content: ResumeFormData } | null) => void;
@@ -265,10 +266,13 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
   // Show loading while checking for existing resumes
   if (isChecking) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
         </div>
       </div>
     );
@@ -278,6 +282,7 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
   if (hasExistingResumes === false && !uploadMethod) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
           <button
             onClick={onBack}
@@ -354,6 +359,7 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
   if (!uploadMethod) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
           <button
             onClick={onBack}
@@ -423,6 +429,7 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
   if (uploadMethod === 'upload') {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
           <button
             onClick={() => setUploadMethod(null)}
@@ -548,6 +555,7 @@ export default function ResumeUpload({ onNext, onBack }: ResumeUploadProps) {
   if (uploadMethod === 'form') {
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
       <div className="max-w-4xl mx-auto px-6 py-8">
         <button
           onClick={() => setUploadMethod(null)}

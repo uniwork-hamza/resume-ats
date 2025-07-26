@@ -204,15 +204,7 @@ function AppContent() {
 
     return (
       <Dashboard
-        userEmail={user?.email || ''}
         onTestResume={handleStartNewTest}
-        onLogout={async () => {
-          await logout();
-          setResumeData(null);
-          setJobDescription('');
-          setAnalysisResults(null);
-          goTo('/');
-        }}
       />
     );
   }

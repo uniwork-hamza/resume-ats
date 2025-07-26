@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Target, Upload, FileText, BarChart3, Clock, CheckCircle, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Upload, FileText, BarChart3, Clock, CheckCircle } from 'lucide-react';
 import { analysisApi, Analysis } from '../services/api';
+import Header from './Header';
 
 interface DashboardProps {
-  userEmail: string;
   onTestResume: () => void;
-  onLogout: () => void;
 }
 
-export default function Dashboard({ userEmail, onTestResume, onLogout }: DashboardProps) {
+export default function Dashboard({ onTestResume }: DashboardProps) {
   // State for recent analyses
   const [analyses, setAnalyses] = useState<Analysis[]>([]);
   const [loading, setLoading] = useState(true);
-  // State for user menu dropdown
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   // Fetch recent analyses on mount
   useEffect(() => {
@@ -33,41 +28,7 @@ export default function Dashboard({ userEmail, onTestResume, onLogout }: Dashboa
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Target className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">ResumeATS</span>
-            </div>
-            <div className="flex items-center space-x-4 relative">
-              <button
-                type="button"
-                onClick={() => setMenuOpen(open => !open)}
-                className="flex items-center space-x-1 text-gray-600 hover:text-gray-800 focus:outline-none"
-              >
-                <span>Welcome, {userEmail.split('@')[0]}</span>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-              {menuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-20">
-                  <button
-                    type="button"
-                    onClick={() => { setMenuOpen(false); navigate('/resume'); }}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >Resume</button>
-                  <button
-                    type="button"
-                    onClick={() => { setMenuOpen(false); onLogout(); }}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >Sign Out</button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Welcome Section */}

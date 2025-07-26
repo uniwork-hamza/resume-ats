@@ -1,7 +1,8 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import { ArrowLeft, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { resumeApi, Resume, ResumeContent } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header';
 
 export default function ResumeSettings() {
   const navigate = useNavigate();
@@ -89,10 +90,23 @@ export default function ResumeSettings() {
     setSaving(false);
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading your resume...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
       <div className="max-w-4xl mx-auto px-6 py-8">
         <button onClick={() => navigate(-1)} className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8">
           <ArrowLeft className="h-5 w-5" />

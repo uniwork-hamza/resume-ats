@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import Header from './Header';
 
 interface AnalysisData {
   overallScore: number;
@@ -96,6 +97,9 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
   return (
     <div id="analysis-report" className="min-h-screen bg-gray-50">
       {/* Header */}
+      <div className="hide-on-download">
+        <Header />
+      </div>
       <div className="bg-white shadow-sm border-b hide-on-download">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
