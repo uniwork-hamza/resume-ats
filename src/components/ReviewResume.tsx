@@ -399,14 +399,14 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
                     required
                     disabled={isLoading}
                   />
-                  <input
+                  {/* <input
                     type="text"
                     placeholder="GPA (optional)"
                     value={edu.gpa}
                     onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
                     className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={isLoading}
-                  />
+                  /> */}
                 </div>
               </div>
             ))}

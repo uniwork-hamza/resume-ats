@@ -1,8 +1,11 @@
 import React from 'react';
-import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award, BookOpen, Lightbulb, Brain, GraduationCap, Briefcase } from 'lucide-react';
+import { ArrowLeft, Download, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award, BookOpen, Lightbulb, Brain, GraduationCap, Briefcase } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Header from './Header';
+
+import PDFReportTemplate from './PDFReportTemplate'; // Adjust path as needed
+
 
 interface AnalysisData {
   overallScore: number;
@@ -100,32 +103,85 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
     return 'Needs Improvement';
   };
 
+  // const handleDownload = async () => {
+  //   const toHide = document.querySelectorAll('.hide-on-download') as NodeListOf<HTMLElement>;
+  //   toHide.forEach(el => el.style.display = 'none');
+  //   const element = document.getElementById('analysis-report');
+  //   if (!element) {
+  //     toHide.forEach(el => el.style.display = '');
+  //     return;
+  //   }
+  //   const canvas = await html2canvas(element);
+  //   const imgData = canvas.toDataURL('image/png');
+  //   const pdf = new jsPDF('p', 'mm', 'a4');
+  //   const imgWidth = 210;
+  //   const pageHeight = 297;
+  //   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //   let heightLeft = imgHeight;
+  //   let position = 0;
+  //   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //   heightLeft -= pageHeight;
+  //   while (heightLeft > 0) {
+  //     position = heightLeft - imgHeight;
+  //     pdf.addPage();
+  //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //     heightLeft -= pageHeight;
+  //   }
+  //   pdf.save('analysis-report.pdf');
+  //   toHide.forEach(el => el.style.display = '');
+  // };
+
   const handleDownload = async () => {
-    const toHide = document.querySelectorAll('.hide-on-download') as NodeListOf<HTMLElement>;
-    toHide.forEach(el => el.style.display = 'none');
-    const element = document.getElementById('analysis-report');
-    if (!element) {
-      toHide.forEach(el => el.style.display = '');
-      return;
-    }
-    const canvas = await html2canvas(element);
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 210;
-    const pageHeight = 297;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
+    // Create a temporary container
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '0';
+    document.body.appendChild(tempContainer);
+
+    // Render the PDF template
+    const { createRoot } = await import('react-dom/client');
+    const root = createRoot(tempContainer);
+    
+    // Create the PDF template component
+    const pdfTemplate = React.createElement(PDFReportTemplate, { analysisData });
+    root.render(pdfTemplate);
+
+    // Wait for render
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+      const canvas = await html2canvas(tempContainer.firstChild as HTMLElement, {
+        width: 794,
+        scale: 2,
+        useCORS: true,
+        allowTaint: false
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`resume-analysis-report-${new Date().toISOString().split('T')[0]}.pdf`);
+    } finally {
+      // Cleanup
+      root.unmount();
+      document.body.removeChild(tempContainer);
     }
-    pdf.save('analysis-report.pdf');
-    toHide.forEach(el => el.style.display = '');
   };
 
   return (
@@ -149,10 +205,10 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 <Download className="h-4 w-4" />
                 <span>Download Report</span>
               </button>
-              <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              {/* <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 <Share2 className="h-4 w-4" />
                 <span>Share Results</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

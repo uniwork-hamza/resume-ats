@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Target, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
+
 
 interface AuthProps {
   mode?: 'signin' | 'signup';
@@ -81,6 +83,8 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
     } catch (error) {
       // Error is handled by the auth context
       console.error('Authentication error:', error);
+      toast.error(error.message || 'Authentication failed');
+
     }
   };
 

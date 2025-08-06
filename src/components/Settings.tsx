@@ -198,9 +198,9 @@ export default function ResumeSettings() {
                     onChange={e=>updateEducation(i,'year',e.target.value)} required disabled={saving}
                     className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
                 </div>
-                <input type="text" placeholder="GPA (optional)" value={edu.gpa}
+                {/* <input type="text" placeholder="GPA (optional)" value={edu.gpa}
                   onChange={e=>updateEducation(i,'gpa',e.target.value)} disabled={saving}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" /> */}
               </div>
             ))}
           </div>
