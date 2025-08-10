@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, FileText, Briefcase } from 'lucide-react';
+import Header from './Header';
 
 interface JobDescriptionProps {
   onNext: (jobDescription: string) => void;
@@ -76,12 +77,13 @@ Preferred Qualifications:
     }
   ];
 
-  const useSample = (sample: typeof sampleJobs[0]) => {
+  const applySample = (sample: typeof sampleJobs[0]) => {
     setJobDescription(sample.description);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
       <div className="max-w-4xl mx-auto px-6 py-8">
         <button
           onClick={onBack}
@@ -148,7 +150,7 @@ Preferred Qualifications:
                   <div
                     key={index}
                     className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer"
-                    onClick={() => useSample(job)}
+                    onClick={() => applySample(job)}
                   >
                     <h4 className="font-semibold text-gray-900">{job.title}</h4>
                     <p className="text-sm text-gray-600">{job.company}</p>

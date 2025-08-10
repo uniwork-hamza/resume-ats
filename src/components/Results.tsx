@@ -1,47 +1,196 @@
 import React from 'react';
-import { ArrowLeft, Download, Share2, CheckCircle, AlertTriangle, X, TrendingUp, Target, FileText, Award } from 'lucide-react';
+import { ArrowLeft, Download, CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Award, BookOpen, Lightbulb, Brain, GraduationCap, Briefcase } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import Header from './Header';
+
+import PDFReportTemplate from './PDFReportTemplate'; // Adjust path as needed
+
+
+interface AnalysisData {
+  overallScore: number;
+  keywordMatch: number;
+  skillsMatch: number;
+  experienceMatch: number;
+  formatScore: number;
+  strengths: string[];
+  improvements: string[];
+  missingKeywords: string[];
+  keywordData: Array<{
+    category: string;
+    matched: number;
+    total: number;
+    percentage: number;
+  }>;
+  detailedAnalysis?: {
+    overallFit: string;
+    skillsMatch: string;
+    educationMatch: string;
+    experienceMatch: string;
+  };
+  recommendations?: {
+    experienceGaps: string[];
+    skillDevelopment: string[];
+    resumeImprovements: string[];
+  };
+  aiResponse?: {
+    strengths: string[];
+    improvements: string[];
+    keywordMatch: number;
+    skillsMatch: number;
+    experienceMatch: number;
+    formatScore: number;
+    overallScore: number;
+    missingKeywords: string[];
+    keywordData: Array<{
+      category: string;
+      matched: number;
+      total: number;
+      percentage: number;
+    }>;
+    detailedAnalysis: {
+      overallFit: string;
+      skillsMatch: string;
+      educationMatch: string;
+      experienceMatch: string;
+    };
+    recommendations: {
+      experienceGaps: string[];
+      skillDevelopment: string[];
+      resumeImprovements: string[];
+    };
+  };
+}
 
 interface ResultsProps {
+  analysisData: AnalysisData;
   onBack: () => void;
   onStartNewTest: () => void;
 }
 
-export default function Results({ onBack, onStartNewTest }: ResultsProps) {
-  const overallScore = 82;
-  const keywordMatch = 75;
-  const skillsMatch = 88;
-  const experienceMatch = 79;
-  const formatScore = 92;
+export default function Results({ analysisData, onBack, onStartNewTest }: ResultsProps) {
+  const {
+    overallScore,
+    keywordMatch,
+    skillsMatch,
+    experienceMatch,
+    formatScore,
+    strengths,
+    improvements,
+    missingKeywords,
+    keywordData,
+    detailedAnalysis,
+    recommendations
+  } = analysisData;
 
-  const strengths = [
-    'Strong technical skills alignment with job requirements',
-    'Relevant work experience in similar roles',
-    'Well-formatted and ATS-friendly resume structure',
-    'Good use of action verbs and quantified achievements'
-  ];
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
 
-  const improvements = [
-    'Include more keywords from the job description',
-    'Add specific metrics and numbers to achievements',
-    'Expand on cloud platform experience (AWS, Azure)',
-    'Include more details about leadership experience'
-  ];
+  const getProgressColor = (score: number) => {
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
 
-  const missingKeywords = [
-    'Kubernetes', 'Docker', 'Microservices', 'CI/CD', 'Agile', 'Scrum', 'AWS', 'Azure'
-  ];
+  const getMatchLevel = (score: number) => {
+    if (score >= 85) return 'Excellent Match';
+    if (score >= 70) return 'Strong Match';
+    if (score >= 55) return 'Good Match';
+    if (score >= 40) return 'Fair Match';
+    return 'Needs Improvement';
+  };
 
-  const keywordData = [
-    { category: 'Technical Skills', matched: 12, total: 15, percentage: 80 },
-    { category: 'Soft Skills', matched: 8, total: 10, percentage: 80 },
-    { category: 'Tools & Technologies', matched: 6, total: 10, percentage: 60 },
-    { category: 'Methodologies', matched: 3, total: 6, percentage: 50 }
-  ];
+  // const handleDownload = async () => {
+  //   const toHide = document.querySelectorAll('.hide-on-download') as NodeListOf<HTMLElement>;
+  //   toHide.forEach(el => el.style.display = 'none');
+  //   const element = document.getElementById('analysis-report');
+  //   if (!element) {
+  //     toHide.forEach(el => el.style.display = '');
+  //     return;
+  //   }
+  //   const canvas = await html2canvas(element);
+  //   const imgData = canvas.toDataURL('image/png');
+  //   const pdf = new jsPDF('p', 'mm', 'a4');
+  //   const imgWidth = 210;
+  //   const pageHeight = 297;
+  //   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //   let heightLeft = imgHeight;
+  //   let position = 0;
+  //   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //   heightLeft -= pageHeight;
+  //   while (heightLeft > 0) {
+  //     position = heightLeft - imgHeight;
+  //     pdf.addPage();
+  //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //     heightLeft -= pageHeight;
+  //   }
+  //   pdf.save('analysis-report.pdf');
+  //   toHide.forEach(el => el.style.display = '');
+  // };
+
+  const handleDownload = async () => {
+    // Create a temporary container
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '0';
+    document.body.appendChild(tempContainer);
+
+    // Render the PDF template
+    const { createRoot } = await import('react-dom/client');
+    const root = createRoot(tempContainer);
+    
+    // Create the PDF template component
+    const pdfTemplate = React.createElement(PDFReportTemplate, { analysisData });
+    root.render(pdfTemplate);
+
+    // Wait for render
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+      const canvas = await html2canvas(tempContainer.firstChild as HTMLElement, {
+        width: 794,
+        scale: 2,
+        useCORS: true,
+        allowTaint: false
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`resume-analysis-report-${new Date().toISOString().split('T')[0]}.pdf`);
+    } finally {
+      // Cleanup
+      root.unmount();
+      document.body.removeChild(tempContainer);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div id="analysis-report" className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="hide-on-download">
+        <Header />
+      </div>
+      <div className="bg-white shadow-sm border-b hide-on-download">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button
@@ -52,14 +201,14 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
               <span>Back to Dashboard</span>
             </button>
             <div className="flex items-center space-x-4">
-              <button className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+              <button onClick={handleDownload} className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
                 <Download className="h-4 w-4" />
                 <span>Download Report</span>
               </button>
-              <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              {/* <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 <Share2 className="h-4 w-4" />
                 <span>Share Results</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -77,7 +226,7 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
               <div className="text-right">
                 <div className="text-5xl font-bold mb-2">{overallScore}%</div>
                 <div className="bg-white bg-opacity-20 rounded-full px-4 py-2">
-                  <span className="text-sm font-medium">Strong Match</span>
+                  <span className="text-sm font-medium">{getMatchLevel(overallScore)}</span>
                 </div>
               </div>
             </div>
@@ -106,9 +255,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">{keywordMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(keywordMatch)}`}>{keywordMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${keywordMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(keywordMatch)}`} style={{ width: `${keywordMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -122,9 +271,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">{skillsMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(skillsMatch)}`}>{skillsMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-green-500 rounded-full" style={{ width: `${skillsMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(skillsMatch)}`} style={{ width: `${skillsMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -138,9 +287,9 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-indigo-600">{experienceMatch}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(experienceMatch)}`}>{experienceMatch}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${experienceMatch}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(experienceMatch)}`} style={{ width: `${experienceMatch}%` }} />
                     </div>
                   </div>
                 </div>
@@ -154,14 +303,128 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-purple-600">{formatScore}%</div>
+                    <div className={`text-2xl font-bold ${getScoreColor(formatScore)}`}>{formatScore}%</div>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${formatScore}%` }} />
+                      <div className={`h-full rounded-full ${getProgressColor(formatScore)}`} style={{ width: `${formatScore}%` }} />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Detailed Analysis Insights */}
+            {detailedAnalysis && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                  <Brain className="h-6 w-6 text-purple-600" />
+                  <span>Deep Analysis Insights</span>
+                </h2>
+                
+                <div className="space-y-6">
+                  {/* Overall Fit */}
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Target className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-blue-900">Overall Fit Assessment</h3>
+                    </div>
+                    <p className="text-blue-800 text-sm leading-relaxed">{detailedAnalysis.overallFit}</p>
+                  </div>
+
+                  {/* Skills Analysis */}
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Award className="h-5 w-5 text-green-600" />
+                      <h3 className="font-semibold text-green-900">Skills Assessment</h3>
+                    </div>
+                    <p className="text-green-800 text-sm leading-relaxed">{detailedAnalysis.skillsMatch}</p>
+                  </div>
+
+                  {/* Experience Analysis */}
+                  <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Briefcase className="h-5 w-5 text-indigo-600" />
+                      <h3 className="font-semibold text-indigo-900">Experience Assessment</h3>
+                    </div>
+                    <p className="text-indigo-800 text-sm leading-relaxed">{detailedAnalysis.experienceMatch}</p>
+                  </div>
+
+                  {/* Education Analysis */}
+                  <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <GraduationCap className="h-5 w-5 text-purple-600" />
+                      <h3 className="font-semibold text-purple-900">Education Assessment</h3>
+                    </div>
+                    <p className="text-purple-800 text-sm leading-relaxed">{detailedAnalysis.educationMatch}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Comprehensive Recommendations */}
+            {recommendations && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-600" />
+                  <span>Professional Recommendations</span>
+                </h2>
+                
+                <div className="space-y-6">
+                  {/* Experience Gaps */}
+                  {recommendations.experienceGaps && recommendations.experienceGaps.length > 0 && (
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <AlertTriangle className="h-5 w-5 text-red-600" />
+                        <h3 className="font-semibold text-red-900">Experience Gaps to Address</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.experienceGaps.map((gap, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-red-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{gap}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Skill Development */}
+                  {recommendations.skillDevelopment && recommendations.skillDevelopment.length > 0 && (
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <BookOpen className="h-5 w-5 text-orange-600" />
+                        <h3 className="font-semibold text-orange-900">Skill Development Suggestions</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.skillDevelopment.map((skill, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-orange-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-orange-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{skill}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Resume Improvements */}
+                  {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                        <h3 className="font-semibold text-blue-900">Resume Enhancement Tips</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {recommendations.resumeImprovements.map((improvement, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-blue-800 text-sm">
+                            <span className="w-1.5 h-1.5 bg-blue-600 rounded-full flex-shrink-0 mt-2"></span>
+                            <span>{improvement}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Keyword Analysis */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
@@ -174,10 +437,10 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                       <p className="text-sm text-gray-600">{item.matched} of {item.total} keywords found</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-gray-900">{item.percentage}%</div>
+                      <div className={`text-lg font-bold ${getScoreColor(item.percentage)}`}>{item.percentage}%</div>
                       <div className="w-24 h-2 bg-gray-200 rounded-full">
                         <div 
-                          className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out"
+                          className={`h-full rounded-full transition-all duration-1000 ease-out ${getProgressColor(item.percentage)}`}
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>
@@ -188,6 +451,7 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
             </div>
 
             {/* Missing Keywords */}
+            {missingKeywords.length > 0 && (
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
               <p className="text-gray-600 mb-4">
@@ -204,11 +468,13 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                 ))}
               </div>
             </div>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Strengths */}
+            {strengths.length > 0 && (
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
                 <CheckCircle className="h-6 w-6 text-green-600" />
@@ -223,8 +489,10 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Areas for Improvement */}
+            {improvements.length > 0 && (
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
                 <AlertTriangle className="h-6 w-6 text-orange-600" />
@@ -239,9 +507,10 @@ export default function Results({ onBack, onStartNewTest }: ResultsProps) {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Action Buttons */}
-            <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white hide-on-download">
               <h3 className="text-xl font-bold mb-4">Ready for Another Test?</h3>
               <p className="text-green-100 mb-6">
                 Test your resume against different job descriptions to maximize your chances.

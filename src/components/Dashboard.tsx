@@ -1,41 +1,64 @@
-import React from 'react';
-import { Target, Upload, FileText, BarChart3, Clock, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Upload, FileText, BarChart3, Clock, CheckCircle, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { analysisApi, Analysis, userApi } from '../services/api';
+import Header from './Header';
 
 interface DashboardProps {
-  userEmail: string;
   onTestResume: () => void;
-  onLogout: () => void;
 }
 
-export default function Dashboard({ userEmail, onTestResume, onLogout }: DashboardProps) {
-  const recentTests = [
-    { id: 1, position: 'Software Engineer', company: 'TechCorp', score: 85, date: '2024-01-15' },
-    { id: 2, position: 'Product Manager', company: 'StartupXYZ', score: 92, date: '2024-01-10' },
-    { id: 3, position: 'Data Analyst', company: 'DataFirm', score: 78, date: '2024-01-05' },
-  ];
+export default function Dashboard({ onTestResume }: DashboardProps) {
+  const navigate = useNavigate();
+  
+  // State for recent analyses
+  const [analyses, setAnalyses] = useState<Analysis[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dashboardStats, setDashboardStats] = useState({
+    totalTests: 0,
+    averageScore: 0
+  });
+
+  // Fetch recent analyses and dashboard stats on mount
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const [analysesRes, dashboardRes] = await Promise.all([
+          analysisApi.getAnalyses({ page: 1, limit: 3 }),
+          userApi.getDashboard()
+        ]);
+        
+        setAnalyses(analysesRes.data?.analyses || []);
+        
+        if (dashboardRes.success && dashboardRes.data) {
+          const data = dashboardRes.data as {
+            stats: {
+              analyses: {
+                total: number;
+                avgOverallScore: number;
+              };
+            };
+          };
+          setDashboardStats({
+            totalTests: data.stats.analyses.total,
+            averageScore: Math.round(data.stats.analyses.avgOverallScore)
+          });
+        }
+      } catch {
+        setAnalyses([]);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const handleViewAnalysis = (analysisId: string) => {
+    navigate(`/results/${analysisId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Target className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">ResumeATS</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600">Welcome, {userEmail.split('@')[0]}</span>
-              <button
-                onClick={onLogout}
-                className="text-gray-500 hover:text-gray-700 font-medium"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Welcome Section */}
@@ -70,7 +93,7 @@ export default function Dashboard({ userEmail, onTestResume, onLogout }: Dashboa
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Tests Completed</h3>
-                  <p className="text-2xl font-bold text-green-600">3</p>
+                  <p className="text-2xl font-bold text-green-600">{dashboardStats.totalTests}</p>
                 </div>
               </div>
             </div>
@@ -82,7 +105,7 @@ export default function Dashboard({ userEmail, onTestResume, onLogout }: Dashboa
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Average Score</h3>
-                  <p className="text-2xl font-bold text-blue-600">85%</p>
+                  <p className="text-2xl font-bold text-blue-600">{dashboardStats.averageScore}%</p>
                 </div>
               </div>
             </div>
@@ -95,38 +118,53 @@ export default function Dashboard({ userEmail, onTestResume, onLogout }: Dashboa
             <h2 className="text-xl font-semibold text-gray-900">Recent Tests</h2>
           </div>
           <div className="divide-y">
-            {recentTests.map((test) => (
-              <div key={test.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-blue-100 p-3 rounded-lg">
-                      <FileText className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{test.position}</h3>
-                      <p className="text-gray-600">{test.company}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-6">
-                    <div className="text-right">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-2xl font-bold text-green-600">{test.score}%</span>
-                        <div className="w-16 h-2 bg-gray-200 rounded-full">
-                          <div 
-                            className="h-full bg-green-500 rounded-full"
-                            style={{ width: `${test.score}%` }}
-                          />
-                        </div>
+            {loading ? (
+              <div className="p-6">Loading...</div>
+            ) : analyses.length > 0 ? (
+              analyses.map((analysis) => (
+                <div key={analysis.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-blue-100 p-3 rounded-lg">
+                        <FileText className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{analysis.jobDescription?.title || 'Unknown Job'}</h3>
+                        <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
                       </div>
                     </div>
-                    <div className="flex items-center text-gray-500 text-sm">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {test.date}
+                    <div className="flex items-center space-x-6">
+                      <div className="text-right">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl font-bold text-green-600">
+                            {analysis.overallScore}%
+                          </span>
+                          <div className="w-16 h-2 bg-gray-200 rounded-full">
+                            <div
+                              className="h-full bg-green-500 rounded-full"
+                              style={{ width: `${analysis.overallScore}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-gray-500 text-sm">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {new Date(analysis.createdAt).toISOString().slice(0, 10)}
+                      </div>
+                      <button
+                        onClick={() => handleViewAnalysis(analysis.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span>View</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="p-6">No tests found.</div>
+            )}
           </div>
         </div>
       </div>
