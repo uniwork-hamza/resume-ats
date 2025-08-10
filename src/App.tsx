@@ -12,6 +12,8 @@ import Results from './components/Results';
 import ResumeSettings from './components/Settings';
 import ReviewResume from './components/ReviewResume';
 import Header from './components/Header';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import { analysisApi } from './services/api';
 import { Loader2 } from 'lucide-react';
 
@@ -169,11 +171,16 @@ function AppContent() {
       }
     };
 
+    const handleForgotPassword = () => {
+      goTo('/forgot-password');
+    };
+
     return (
       <Auth
         mode={mode}
         onLogin={handleLoginSuccess}
         onBack={() => goTo('/')}
+        onForgotPassword={handleForgotPassword}
       />
     );
   }
@@ -514,12 +521,19 @@ function AppContent() {
     return <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />;
   }
 
+  function ForgotPasswordScreen() {
+    const navigate = useNavigate();
+    return <ForgotPassword onBack={() => navigate('/auth/signin')} />;
+  }
+
   return (
     <Routes>
       <Route path="/resume" element={isAuthenticated ? <ResumeSettings /> : <Navigate to="/auth/signin?redirect=/resume" />} />
       <Route path="/" element={<LandingScreen />} />
       <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />
+      <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/dashboard" element={isAuthenticated ? <DashboardScreen /> : <Navigate to="/auth/signin?redirect=/dashboard" />} />
       <Route path="/resume-upload" element={isAuthenticated ? <ResumeUploadScreen /> : <Navigate to="/auth/signin?redirect=/resume-upload" />} />
       <Route path="/review-resume" element={isAuthenticated && parsedResumeData ? <ReviewResumeScreen /> : <Navigate to="/resume-upload" />} />

@@ -306,6 +306,17 @@ export const authApi = {
       body: JSON.stringify({ email }),
     });
   },
+
+  async resetPassword(token: string, newPassword: string, confirmPassword: string): Promise<ApiResponse> {
+    return apiRequest('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword, confirmPassword }),
+    });
+  },
+
+  async verifyResetToken(token: string): Promise<ApiResponse> {
+    return apiRequest(`/auth/verify-reset-token/${token}`);
+  },
 };
 
 // Resume API

@@ -1,5 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { prisma, supabase } from '../config/database.js';
 import { protect, createSendToken } from '../middleware/auth.js';
 import { validate, userSchemas } from '../utils/validation.js';
@@ -24,25 +26,9 @@ router.post('/register', validate(userSchemas.register), async (req, res, next) 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name,
-        },
-      },
-    });
-
-    if (authError) {
-      return next(new AppError(authError.message, 400));
-    }
-
     // Create user in our database
     const newUser = await prisma.user.create({
       data: {
-        id: authData.user.id,
         email,
         password: hashedPassword,
         name,
@@ -77,15 +63,8 @@ router.post('/login', validate(userSchemas.login), async (req, res, next) => {
       return next(new AppError('Invalid email or password', 401));
     }
 
-    // Sign in with Supabase
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (authError) {
-      return next(new AppError(authError.message, 400));
-    }
+    // Note: We're not using Supabase authentication for login since we're using our own system
+    // Supabase is used mainly for email delivery and user management
 
     // Send success response
     createSendToken(user, 200, res);
@@ -97,12 +76,8 @@ router.post('/login', validate(userSchemas.login), async (req, res, next) => {
 // Logout user
 router.post('/logout', protect, async (req, res, next) => {
   try {
-    // Sign out from Supabase
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      return next(new AppError(error.message, 400));
-    }
+    // Note: We're not using Supabase authentication, so no need to sign out from there
+    // Our JWT token is handled by the frontend
 
     res.status(200).json({
       success: true,
@@ -207,15 +182,7 @@ router.patch('/change-password', protect, validate(userSchemas.changePassword), 
       },
     });
 
-    // Update password in Supabase
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (error) {
-      console.error('Supabase password update error:', error);
-      // Continue even if Supabase update fails
-    }
+    // Note: We're not updating Supabase password since we're using our own authentication system
 
     res.status(200).json({
       success: true,
@@ -227,26 +194,52 @@ router.patch('/change-password', protect, validate(userSchemas.changePassword), 
 });
 
 // Forgot password
-router.post('/forgot-password', async (req, res, next) => {
+router.post('/forgot-password', validate(userSchemas.forgotPassword), async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return next(new AppError('Email is required', 400));
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      // Don't reveal if user exists or not for security
+      return res.status(200).json({
+        success: true,
+        message: 'If an account with that email exists, a password reset link has been sent.',
+      });
     }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Store reset token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      },
+    });
+
+    // Create reset URL
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
     // Send password reset email through Supabase
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.FRONTEND_URL}/reset-password`,
+      redirectTo: resetUrl,
     });
 
     if (error) {
-      return next(new AppError(error.message, 400));
+      console.error('Supabase reset email error:', error);
+      // Continue with custom implementation even if Supabase fails
     }
 
     res.status(200).json({
       success: true,
-      message: 'Password reset email sent',
+      message: 'If an account with that email exists, a password reset link has been sent.',
     });
   } catch (error) {
     next(error);
@@ -254,19 +247,75 @@ router.post('/forgot-password', async (req, res, next) => {
 });
 
 // Reset password
-router.post('/reset-password', async (req, res, next) => {
+router.post('/reset-password', validate(userSchemas.resetPassword), async (req, res, next) => {
   try {
     const { token, newPassword } = req.body;
 
-    if (!token || !newPassword) {
-      return next(new AppError('Token and new password are required', 400));
+    // Find user with valid reset token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return next(new AppError('Invalid or expired reset token', 400));
     }
 
-    // This would typically be handled by Supabase's built-in reset flow
-    // For custom implementation, you'd verify the token and update the password
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // Update password and clear reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    // Note: We're not updating Supabase password here because:
+    // 1. The user is not authenticated during password reset
+    // 2. Our primary authentication is handled by our own system
+    // 3. Supabase is used mainly for email delivery
+
     res.status(200).json({
       success: true,
-      message: 'Password reset successful',
+      message: 'Password reset successful. You can now sign in with your new password.',
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Verify reset token
+router.get('/verify-reset-token/:token', async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid or expired reset token',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Reset token is valid',
     });
   } catch (error) {
     next(error);

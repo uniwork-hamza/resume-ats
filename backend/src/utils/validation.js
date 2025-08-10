@@ -46,6 +46,27 @@ export const userSchemas = {
       'any.required': 'New password is required',
     }),
   }),
+
+  forgotPassword: Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.email': 'Please provide a valid email',
+      'any.required': 'Email is required',
+    }),
+  }),
+
+  resetPassword: Joi.object({
+    token: Joi.string().required().messages({
+      'any.required': 'Reset token is required',
+    }),
+    newPassword: Joi.string().min(6).required().messages({
+      'string.min': 'New password must be at least 6 characters long',
+      'any.required': 'New password is required',
+    }),
+    confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required().messages({
+      'any.only': 'Passwords must match',
+      'any.required': 'Password confirmation is required',
+    }),
+  }),
 };
 
 // Resume validation schemas (matching frontend structure)

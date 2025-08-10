@@ -8,9 +8,10 @@ interface AuthProps {
   mode?: 'signin' | 'signup';
   onLogin: (email: string) => void;
   onBack: () => void;
+  onForgotPassword?: () => void;
 }
 
-export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
+export default function Auth({ mode = 'signin', onLogin, onBack, onForgotPassword }: AuthProps) {
   const [isLogin, setIsLogin] = useState(mode === 'signin');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -80,11 +81,11 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
       
       // If successful, call the onLogin callback
     onLogin(formData.email);
-    } catch (error) {
+    } catch (error: unknown) {
       // Error is handled by the auth context
       console.error('Authentication error:', error);
-      toast.error(error.message || 'Authentication failed');
-
+      const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
+      toast.error(errorMessage);
     }
   };
 
@@ -240,7 +241,7 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-3">
             <p className="text-gray-600">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
               <button
@@ -252,6 +253,19 @@ export default function Auth({ mode = 'signin', onLogin, onBack }: AuthProps) {
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </p>
+            
+            {isLogin && onForgotPassword && (
+              <p className="text-gray-600">
+                <button
+                  type="button"
+                  onClick={onForgotPassword}
+                  disabled={isLoading}
+                  className="text-blue-600 hover:text-blue-700 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
+                >
+                  Forgot your password?
+                </button>
+              </p>
+            )}
           </div>
         </div>
       </div>
