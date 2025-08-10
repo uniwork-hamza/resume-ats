@@ -10,6 +10,7 @@ import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
 import Results from './components/Results';
 import ResumeSettings from './components/Settings';
+import ResumeScreen from './components/ResumeScreen';
 import ReviewResume from './components/ReviewResume';
 import Header from './components/Header';
 import ForgotPassword from './components/ForgotPassword';
@@ -243,6 +244,7 @@ function AppContent() {
 
   function ResumeUploadScreen() {
     const { goTo } = useNav();
+    
     return (
       <ResumeUpload
         onNext={(data) => { 
@@ -266,14 +268,29 @@ function AppContent() {
             }
           }
           setAnalysisResults(null);
-          goTo('/job-description'); 
+          
+          // Check if user came from resume section or dashboard
+          const fromResume = window.location.search.includes('from=resume');
+          if (fromResume) {
+            goTo('/resume'); // Go back to resume section
+          } else {
+            goTo('/job-description'); // Continue with analysis flow
+          }
         }}
         onParseComplete={(parsedData) => {
           // Store parsed data and navigate to review
           setParsedResumeData(parsedData);
           goTo('/review-resume');
         }}
-        onBack={() => goTo('/dashboard')}
+        onBack={() => {
+          // Check if user came from resume section
+          const fromResume = window.location.search.includes('from=resume');
+          if (fromResume) {
+            goTo('/resume'); // Go back to resume section
+          } else {
+            goTo('/dashboard'); // Go back to dashboard
+          }
+        }}
       />
     );
   }
@@ -528,7 +545,7 @@ function AppContent() {
 
   return (
     <Routes>
-      <Route path="/resume" element={isAuthenticated ? <ResumeSettings /> : <Navigate to="/auth/signin?redirect=/resume" />} />
+      <Route path="/resume" element={isAuthenticated ? <ResumeScreen /> : <Navigate to="/auth/signin?redirect=/resume" />} />
       <Route path="/" element={<LandingScreen />} />
       <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />

@@ -23,10 +23,10 @@ Please provide a detailed Semantic Analysis in the following JSON format exactly
 
 {
   "overallScore": [number between 1-100 - overall match score],
-  "keywordMatch": [number between 1-100 - keyword alignment score, make sure to score according to the keywords data you will get in the keywordData field],
-  "skillsMatch": [number between 1-100 - skills alignment score],
-  "experienceMatch": [number between 1-100 - experience relevance score],
-  "formatScore": [number between 1-100 - resume format and ATS compatibility score],
+  "keywordMatch": [weightage: 30% number between 1-100 - keyword alignment score, make sure to score according to the keywords data you will get in the keywordData field],
+  "skillsMatch": [weightage: 30% number between 1-100 - skills alignment score],
+  "experienceMatch": [weightage: 30% number between 1-100 - experience relevance score],
+  "formatScore": [weightage: 10% number between 1-100 - resume format and ATS compatibility score],
   "strengths": [array of 3-5 specific strengths where candidate excels],
   "improvements": [array of 3-5 specific areas for improvement],
   "missingKeywords": [array of 5-10 important keywords from job description missing in resume],
@@ -166,7 +166,7 @@ ${resumeText}
       "gpa": "[GPA if mentioned, otherwise empty string]"
     }
   ],
-  "skills": "[Comma-separated list of all skills mentioned in the resume]"
+  "skills": "[Comma-separated list of all skills mentioned in the resume. Make sure you only fetch skills. Sometimes you will get the skills title with other things like Skills and Projects, skills and certificates etc. So just get the skills nothing else.]"
 }
 
 **EXTRACTION GUIDELINES:**

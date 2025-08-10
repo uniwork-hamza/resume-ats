@@ -1,11 +1,8 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import { ArrowLeft, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { resumeApi, Resume, ResumeContent } from '../services/api';
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 
 export default function ResumeSettings() {
-  const navigate = useNavigate();
   const [resume, setResume] = useState<Resume | null>(null);
   const [formData, setFormData] = useState<ResumeContent>({
     name: '',
@@ -92,33 +89,24 @@ export default function ResumeSettings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading your resume...</p>
-          </div>
+      <div className="flex items-center justify-center py-8">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your resume...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <button onClick={() => navigate(-1)} className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8">
-          <ArrowLeft className="h-5 w-5" />
-          <span>Back to Dashboard</span>
-        </button>
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Resume</h1>
-          <p className="text-xl text-gray-600">Edit your resume details below</p>
-        </div>
+    <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Resume</h1>
+        <p className="text-xl text-gray-600">Edit your resume details below</p>
+      </div>
         {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"><AlertCircle className="inline-block mr-2"/> {error}</div>}
         {success && <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700"><CheckCircle className="inline-block mr-2"/> {success}</div>}
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -216,6 +204,5 @@ export default function ResumeSettings() {
           </button>
         </form>
       </div>
-    </div>
-  );
+    );
 } 
