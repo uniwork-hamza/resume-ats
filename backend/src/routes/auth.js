@@ -205,9 +205,9 @@ router.post('/forgot-password', validate(userSchemas.forgotPassword), async (req
 
     if (!user) {
       // Don't reveal if user exists or not for security
-      return res.status(200).json({
-        success: true,
-        message: 'If an account with that email exists, a password reset link has been sent.',
+      return res.status(404).json({
+        success: false,
+        message: 'Email not found. Please check your email and try again.',
       });
     }
 
@@ -226,7 +226,7 @@ router.post('/forgot-password', validate(userSchemas.forgotPassword), async (req
 
     // Create reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-
+    console.log('Reset URL:', resetUrl);
     // Send password reset email through Supabase
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetUrl,

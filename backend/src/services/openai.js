@@ -22,6 +22,7 @@ ${jobDescription.description}
 Please provide a detailed Semantic Analysis in the following JSON format exactly as specified:
 
 {
+  "jobTitle": "[Generate a concise, professional job title based on the job description content. This should be a standard industry title that best represents the position being analyzed]",
   "overallScore": [number between 1-100 - overall match score],
   "keywordMatch": [weightage: 30% number between 1-100 - keyword alignment score, make sure to score according to the keywords data you will get in the keywordData field],
   "skillsMatch": [weightage: 30% number between 1-100 - skills alignment score],

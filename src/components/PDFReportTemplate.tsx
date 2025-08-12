@@ -7,6 +7,7 @@ interface AnalysisData {
   skillsMatch: number;
   experienceMatch: number;
   formatScore: number;
+  jobTitle?: string;
   strengths: string[];
   improvements: string[];
   missingKeywords: string[];
@@ -368,6 +369,11 @@ const PDFReportTemplate: React.FC<PDFReportTemplateProps> = ({ analysisData }) =
         <div className="pdf-header">
           <h1 className="pdf-title">Resume Analysis Report</h1>
           <p className="pdf-subtitle">Professional ATS & Job Match Analysis</p>
+          {analysisData.jobTitle && (
+            <p className="pdf-subtitle" style={{ color: '#1e40af', fontWeight: '600', marginTop: '5px' }}>
+              Position: {analysisData.jobTitle}
+            </p>
+          )}
           <div className="pdf-meta">
             <span>Generated: {currentDate}</span>
             <span>Confidential Report</span>
