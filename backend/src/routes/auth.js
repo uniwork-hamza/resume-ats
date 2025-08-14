@@ -2,10 +2,11 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { prisma, supabase } from '../config/database.js';
+import { prisma } from '../config/database.js';
 import { protect, createSendToken } from '../middleware/auth.js';
 import { validate, userSchemas } from '../utils/validation.js';
 import { AppError } from '../middleware/errorHandler.js';
+import { sendPasswordResetEmail } from '../services/sendgrid.js';
 
 const router = express.Router();
 
@@ -63,8 +64,7 @@ router.post('/login', validate(userSchemas.login), async (req, res, next) => {
       return next(new AppError('Invalid email or password', 401));
     }
 
-    // Note: We're not using Supabase authentication for login since we're using our own system
-    // Supabase is used mainly for email delivery and user management
+    // Note: We're using our own authentication system with SendGrid for email delivery
 
     // Send success response
     createSendToken(user, 200, res);
@@ -76,7 +76,7 @@ router.post('/login', validate(userSchemas.login), async (req, res, next) => {
 // Logout user
 router.post('/logout', protect, async (req, res, next) => {
   try {
-    // Note: We're not using Supabase authentication, so no need to sign out from there
+    // Note: We're using our own authentication system
     // Our JWT token is handled by the frontend
 
     res.status(200).json({
@@ -182,7 +182,7 @@ router.patch('/change-password', protect, validate(userSchemas.changePassword), 
       },
     });
 
-    // Note: We're not updating Supabase password since we're using our own authentication system
+    // Note: We're using our own authentication system
 
     res.status(200).json({
       success: true,
@@ -227,14 +227,15 @@ router.post('/forgot-password', validate(userSchemas.forgotPassword), async (req
     // Create reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
     console.log('Reset URL:', resetUrl);
-    // Send password reset email through Supabase
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: resetUrl,
-    });
-
-    if (error) {
-      console.error('Supabase reset email error:', error);
-      // Continue with custom implementation even if Supabase fails
+    
+    // Send password reset email through SendGrid
+    try {
+      await sendPasswordResetEmail(email, resetUrl, user.name || 'User');
+      console.log('Password reset email sent successfully via SendGrid');
+    } catch (emailError) {
+      console.error('SendGrid email error:', emailError);
+      // Continue with the response even if email fails
+      // The user can still use the reset token manually
     }
 
     res.status(200).json({
@@ -278,10 +279,7 @@ router.post('/reset-password', validate(userSchemas.resetPassword), async (req, 
       },
     });
 
-    // Note: We're not updating Supabase password here because:
-    // 1. The user is not authenticated during password reset
-    // 2. Our primary authentication is handled by our own system
-    // 3. Supabase is used mainly for email delivery
+    // Note: We're using our own authentication system with SendGrid for email delivery
 
     res.status(200).json({
       success: true,
