@@ -13,7 +13,7 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "@prisma/client": "^5.7.0",
+    "@prisma/client": "^5.7.1",
     "@supabase/supabase-js": "^2.38.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -30,7 +30,8 @@
     "pdf-parse": "^1.1.1",
     "pdf2pic": "^3.2.0",
     "pdfjs-dist": "^5.3.31",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "@sendgrid/mail": "^8.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

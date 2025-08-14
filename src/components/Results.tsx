@@ -13,6 +13,7 @@ interface AnalysisData {
   skillsMatch: number;
   experienceMatch: number;
   formatScore: number;
+  jobTitle?: string;
   strengths: string[];
   improvements: string[];
   missingKeywords: string[];
@@ -222,6 +223,9 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
               <div>
                 <h1 className="text-3xl font-bold mb-2">Resume Analysis Complete</h1>
                 <p className="text-blue-100">Your resume scored {overallScore}% for this position</p>
+                {analysisData.jobTitle && (
+                  <p className="text-blue-100 text-lg font-medium mt-2">Position: {analysisData.jobTitle}</p>
+                )}
               </div>
               <div className="text-right">
                 <div className="text-5xl font-bold mb-2">{overallScore}%</div>

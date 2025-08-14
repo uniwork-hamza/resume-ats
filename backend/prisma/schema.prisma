@@ -1,110 +1,89 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String?
-  name      String?
-  avatarUrl String?
-  resetToken String?
+  id               String           @id @default(uuid())
+  email            String           @unique
+  password         String?
+  name             String?
+  avatarUrl        String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  resumes    Resume[]
-  jobDescs   JobDescription[]
-  analyses   Analysis[]
+  analyses         Analysis[]
+  jobDescs         JobDescription[]
+  resumes          Resume[]
 
   @@map("users")
 }
 
 model Resume {
-  id          String   @id @default(uuid())
-  title       String
-  type        String   // 'form' or 'file'
-  content     Json     // Store structured resume data matching frontend form
-  fileName    String?
-  filePath    String?
-  fileSize    Int?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Foreign Keys
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Relations
-  analyses    Analysis[]
+  id        String     @id @default(uuid())
+  title     String
+  type      String
+  content   Json
+  fileName  String?
+  filePath  String?
+  fileSize  Int?
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userId    String
+  analyses  Analysis[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("resumes")
 }
 
 model JobDescription {
-  id          String   @id @default(uuid())
-  title       String   // Auto-extracted or user-provided title
-  description String   // Full job description text from frontend
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Foreign Keys
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Relations
   analyses    Analysis[]
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("job_descriptions")
 }
 
 model Analysis {
-  id             String   @id @default(uuid())
-  // Updated scoring fields to match OpenAI response
-  overallScore   Float    // Overall match score (was matchScore)
-  keywordMatch   Float    // Keyword alignment score  
-  skillsMatch    Float    // Skills alignment score
-  experienceMatch Float   // Experience relevance score
-  formatScore    Float    // ATS-friendliness score
-  
-  // Feedback arrays
-  strengths      String[] // Array of strengths
-  improvements   String[] // Array of areas for improvement (was weaknesses)
-  missingKeywords String[] // Array of missing keywords (was missingSkills)
-  
-  // Complete structured analysis data
-  keywordData    Json     // Detailed keyword analysis by category
-  detailedAnalysis Json?  // Optional detailed analysis sections
-  recommendations Json?   // Optional recommendations
-  aiResponse     Json     // Complete AI response for backup
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  // Foreign Keys
-  userId         String
-  resumeId       String
-  jobDescId      String
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume         Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  jobDescription JobDescription @relation(fields: [jobDescId], references: [id], onDelete: Cascade)
+  id               String         @id @default(uuid())
+  overallScore     Float
+  keywordMatch     Float
+  skillsMatch      Float
+  experienceMatch  Float
+  formatScore      Float
+  strengths        String[]
+  improvements     String[]
+  missingKeywords  String[]
+  keywordData      Json
+  detailedAnalysis Json?
+  recommendations  Json?
+  aiResponse       Json
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  userId           String
+  resumeId         String
+  jobDescId        String
+  jobTitle         String?
+  jobDescription   JobDescription @relation(fields: [jobDescId], references: [id], onDelete: Cascade)
+  resume           Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("analyses")
 }
 
-// Model for storing system settings and configurations
 model SystemConfig {
   id          String   @id @default(uuid())
   key         String   @unique
@@ -114,4 +93,4 @@ model SystemConfig {
   updatedAt   DateTime @updatedAt
 
   @@map("system_configs")
-} 
+}

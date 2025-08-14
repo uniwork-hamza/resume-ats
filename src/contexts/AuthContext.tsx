@@ -96,8 +96,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       
       const response = await authApi.register({ email, password, name });
-      
-      if (response.success && response.data) {
+      console.log('Registration response:', response);
+      if (response?.success && response?.data?.user) {
         setUser(response.data.user);
       } else {
         throw new Error('Registration failed');

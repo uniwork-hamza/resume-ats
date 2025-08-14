@@ -87,6 +87,9 @@ export interface Analysis {
   experienceMatch: number;
   formatScore: number;
   
+  // AI-generated job title
+  jobTitle?: string;
+
   // Feedback arrays
   strengths: string[];
   improvements: string[];
@@ -218,8 +221,14 @@ export const authApi = {
 
     if (response.success && response.data) {
       const authResponse = response.data as AuthResponse;
-      TokenManager.setToken(authResponse.token);
-      return authResponse;
+      TokenManager.setToken(response?.token);
+      return {
+        success: true,
+        token: response.token,
+        data: {
+          user: authResponse?.user,
+        },
+      };
     }
 
     throw new Error(response.error || 'Registration failed');

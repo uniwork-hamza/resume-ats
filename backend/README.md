@@ -1,10 +1,10 @@
 # Resume ATS Backend
 
-A comprehensive backend API for the Resume ATS (Applicant Tracking System) application built with Node.js, Express.js, Prisma, Supabase, and OpenAI.
+A comprehensive backend API for the Resume ATS (Applicant Tracking System) application built with Node.js, Express.js, Prisma, SendGrid, and OpenAI.
 
 ## Features
 
-- 🔐 **Authentication**: Complete auth system with Supabase integration
+- 🔐 **Authentication**: Complete auth system with SendGrid email integration
 - 📄 **Resume Management**: CRUD operations for resumes with file upload support
 - 💼 **Job Description Management**: Full job posting management
 - 🤖 **AI Analysis**: OpenAI-powered resume analysis and optimization
@@ -17,7 +17,7 @@ A comprehensive backend API for the Resume ATS (Applicant Tracking System) appli
 - **Framework**: Express.js
 - **Database**: PostgreSQL (Supabase)
 - **ORM**: Prisma
-- **Authentication**: Supabase Auth + JWT
+- **Authentication**: JWT + SendGrid Email
 - **AI**: OpenAI GPT-4
 - **File Upload**: Multer
 - **Validation**: Joi
@@ -28,7 +28,7 @@ A comprehensive backend API for the Resume ATS (Applicant Tracking System) appli
 - Node.js (v18 or higher)
 - PostgreSQL database (Supabase recommended)
 - OpenAI API key
-- Supabase account and project
+- SendGrid account and API key
 
 ## Setup Instructions
 
@@ -45,10 +45,9 @@ A comprehensive backend API for the Resume ATS (Applicant Tracking System) appli
    PORT=3001
    NODE_ENV=development
    
-   # Supabase Configuration
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_KEY=your_supabase_service_key
+   # SendGrid Configuration
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_FROM_EMAIL=noreply@yourdomain.com
    
    # Database Configuration
    DATABASE_URL=your_supabase_database_url
