@@ -13,6 +13,7 @@ import ResumeSettings from './components/Settings';
 import ResumeScreen from './components/ResumeScreen';
 import ReviewResume from './components/ReviewResume';
 import Header from './components/Header';
+import Layout from './components/Layout';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import { analysisApi } from './services/api';
@@ -236,9 +237,11 @@ function AppContent() {
     };
 
     return (
-      <Dashboard
-        onTestResume={handleStartNewTest}
-      />
+      <Layout>
+        <Dashboard
+          onTestResume={handleStartNewTest}
+        />
+      </Layout>
     );
   }
 
@@ -246,52 +249,54 @@ function AppContent() {
     const { goTo } = useNav();
     
     return (
-      <ResumeUpload
-        onNext={(data) => { 
-          if (data) {
-            // Handle both form data and API response
-            if ('content' in data) {
-              // API response format
-              setResumeData(data as Resume);
-            } else {
-              // Form data format - create a mock Resume object
-              const mockResume: Resume = {
-                id: 'temp-id',
-                title: 'User Resume',
-                type: 'form',
-                content: data,
-                isActive: true,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-              };
-              setResumeData(mockResume);
+      <Layout>
+        <ResumeUpload
+          onNext={(data) => { 
+            if (data) {
+              // Handle both form data and API response
+              if ('content' in data) {
+                // API response format
+                setResumeData(data as Resume);
+              } else {
+                // Form data format - create a mock Resume object
+                const mockResume: Resume = {
+                  id: 'temp-id',
+                  title: 'User Resume',
+                  type: 'form',
+                  content: data,
+                  isActive: true,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString()
+                };
+                setResumeData(mockResume);
+              }
             }
-          }
-          setAnalysisResults(null);
-          
-          // Check if user came from resume section or dashboard
-          const fromResume = window.location.search.includes('from=resume');
-          if (fromResume) {
-            goTo('/resume'); // Go back to resume section
-          } else {
-            goTo('/job-description'); // Continue with analysis flow
-          }
-        }}
-        onParseComplete={(parsedData) => {
-          // Store parsed data and navigate to review
-          setParsedResumeData(parsedData);
-          goTo('/review-resume');
-        }}
-        onBack={() => {
-          // Check if user came from resume section
-          const fromResume = window.location.search.includes('from=resume');
-          if (fromResume) {
-            goTo('/resume'); // Go back to resume section
-          } else {
-            goTo('/dashboard'); // Go back to dashboard
-          }
-        }}
-      />
+            setAnalysisResults(null);
+            
+            // Check if user came from resume section or dashboard
+            const fromResume = window.location.search.includes('from=resume');
+            if (fromResume) {
+              goTo('/resume'); // Go back to resume section
+            } else {
+              goTo('/job-description'); // Continue with analysis flow
+            }
+          }}
+          onParseComplete={(parsedData) => {
+            // Store parsed data and navigate to review
+            setParsedResumeData(parsedData);
+            goTo('/review-resume');
+          }}
+          onBack={() => {
+            // Check if user came from resume section
+            const fromResume = window.location.search.includes('from=resume');
+            if (fromResume) {
+              goTo('/resume'); // Go back to resume section
+            } else {
+              goTo('/dashboard'); // Go back to dashboard
+            }
+          }}
+        />
+      </Layout>
     );
   }
 
@@ -309,32 +314,34 @@ function AppContent() {
     }
     
     return (
-      <ReviewResume
-        parsedData={parsedResumeData.parsedContent}
-        fileName={parsedResumeData.fileName}
-        onNext={(resumeData) => {
-          // Convert the response to proper Resume format
-          const fullResumeData: Resume = {
-            id: resumeData.id,
-            title: resumeData.title,
-            type: 'file',
-            content: resumeData.content,
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-          setResumeData(fullResumeData);
-          setAnalysisResults(null);
-          setIsNavigatingFromReview(true);
-          setParsedResumeData(null); // Clear parsed data
-          goTo('/job-description');
-        }}
-        onBack={() => {
-          setIsNavigatingFromReview(false); // Reset navigation flag
-          setParsedResumeData(null); // Clear parsed data when going back
-          goTo('/resume-upload');
-        }}
-      />
+      <Layout>
+        <ReviewResume
+          parsedData={parsedResumeData.parsedContent}
+          fileName={parsedResumeData.fileName}
+          onNext={(resumeData) => {
+            // Convert the response to proper Resume format
+            const fullResumeData: Resume = {
+              id: resumeData.id,
+              title: resumeData.title,
+              type: 'file',
+              content: resumeData.content,
+              isActive: true,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            setResumeData(fullResumeData);
+            setAnalysisResults(null);
+            setIsNavigatingFromReview(true);
+            setParsedResumeData(null); // Clear parsed data
+            goTo('/job-description');
+          }}
+          onBack={() => {
+            setIsNavigatingFromReview(false); // Reset navigation flag
+            setParsedResumeData(null); // Clear parsed data when going back
+            goTo('/resume-upload');
+          }}
+        />
+      </Layout>
     );
   }
 
@@ -348,14 +355,16 @@ function AppContent() {
     }
     
     return (
-      <JobDescription
-        onNext={(desc) => { 
-          setJobDescription(desc); 
-          setAnalysisResults(null);
-          goTo('/loading'); 
-        }}
-        onBack={() => navigate(-1)}
-      />
+<Layout>
+        <JobDescription
+          onNext={(desc) => { 
+            setJobDescription(desc); 
+            setAnalysisResults(null);
+            goTo('/loading'); 
+          }}
+          onBack={() => navigate(-1)}
+        />
+</Layout>
     );
   }
 
@@ -414,16 +423,18 @@ function AppContent() {
       return null;
     }
     return (
-      <Loading 
-        resumeData={resumeData}
-        jobDescription={jobDescription}
-        onComplete={(analysisData) => {
-          console.log('App: Received analysis completion');
-          const transformedData = transformAnalysisData(analysisData);
-          setAnalysisResults(transformedData);
-          goTo(`/results/${analysisData.id}`);
-        }}
-      />
+      <Layout>
+        <Loading 
+          resumeData={resumeData}
+          jobDescription={jobDescription}
+          onComplete={(analysisData) => {
+            console.log('App: Received analysis completion');
+            const transformedData = transformAnalysisData(analysisData);
+            setAnalysisResults(transformedData);
+            goTo(`/results/${analysisData.id}`);
+          }}
+        />
+      </Layout>
     );
   }
 
@@ -512,30 +523,32 @@ function AppContent() {
     
     if (loading) {
       return (
-        <div className="min-h-screen bg-gray-50">
-          <Header />
+        <Layout>
           <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
               <p className="text-gray-600">Loading analysis...</p>
             </div>
           </div>
-        </div>
+        </Layout>
       );
     }
     if (!data) {
       return (
-        <div className="min-h-screen bg-gray-50">
-          <Header />
+        <Layout>
           <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
             <div className="text-center">
               <p className="text-gray-600">Analysis not found. Please try again.</p>
             </div>
           </div>
-        </div>
+        </Layout>
       );
     }
-    return <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />;
+    return (
+      <Layout>
+        <Results analysisData={data} onBack={() => navigate('/dashboard')} onStartNewTest={handleStartNewTest} />
+      </Layout>
+    );
   }
 
   function ForgotPasswordScreen() {
@@ -545,7 +558,7 @@ function AppContent() {
 
   return (
     <Routes>
-      <Route path="/resume" element={isAuthenticated ? <ResumeScreen /> : <Navigate to="/auth/signin?redirect=/resume" />} />
+      <Route path="/resume" element={isAuthenticated ? <Layout><ResumeScreen /></Layout> : <Navigate to="/auth/signin?redirect=/resume" />} />
       <Route path="/" element={<LandingScreen />} />
       <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />

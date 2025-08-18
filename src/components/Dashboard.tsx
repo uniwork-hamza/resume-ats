@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Upload, FileText, BarChart3, Clock, CheckCircle, Eye } from 'lucide-react';
+import { Upload, FileText, BarChart3, Clock, CheckCircle, Eye, } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { analysisApi, Analysis, userApi } from '../services/api';
 import Header from './Header';
@@ -57,115 +57,127 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="max-w-7xl mx-auto px-14 py-12">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Get Your Resume Job-Ready with AI-Powered Insights</h1>
+        <p className="text-gray-600">Ready to optimize your resume for your next job application?</p>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Ready to optimize your resume for your next job application?</p>
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+          <div className="bg-gradient-to-r from-[#182541] to-[#1e1c47] rounded-2xl p-8 text-white">
+            <h2 className="text-2xl font-bold mb-4">Test Your Resume</h2>
+            <p className="text-blue-100 mb-6">
+              Upload your resume and compare it against a job description to get instant feedback and optimization suggestions.
+            </p>
+            <button
+              onClick={onTestResume}
+              className="bg-white text-gray-900 hover:bg-gray-800 hover:text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center space-x-2"
+            >
+              <Upload className="h-5 w-5" />
+              <span>Start New Test</span>
+            </button>
+          </div>
         </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
-              <h2 className="text-2xl font-bold mb-4">Test Your Resume</h2>
-              <p className="text-blue-100 mb-6">
-                Upload your resume and compare it against a job description to get instant feedback and optimization suggestions.
-              </p>
-              <button
-                onClick={onTestResume}
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center space-x-2"
-              >
-                <Upload className="h-5 w-5" />
-                <span>Start New Test</span>
-              </button>
+        
+        <div className="space-y-4">
+          <div className="bg-white rounded-xl p-6 shadow-sm border">
+            <div className="flex items-center space-x-3">
+              <div className="bg-green-100 p-3 rounded-lg">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Tests Completed</h3>
+                <p className="text-2xl font-bold text-green-600">{dashboardStats.totalTests}</p>
+              </div>
             </div>
           </div>
           
-          <div className="space-y-4">
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <div className="flex items-center space-x-3">
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Tests Completed</h3>
-                  <p className="text-2xl font-bold text-green-600">{dashboardStats.totalTests}</p>
-                </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border">
+            <div className="flex items-center space-x-3">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-blue-600" />
               </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <BarChart3 className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Average Score</h3>
-                  <p className="text-2xl font-bold text-blue-600">{dashboardStats.averageScore}%</p>
-                </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Average Score</h3>
+                <p className="text-2xl font-bold text-blue-900">{dashboardStats.averageScore}%</p>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Recent Tests */}
-        <div className="bg-white rounded-2xl shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold text-gray-900">Recent Tests</h2>
-          </div>
-          <div className="divide-y">
-            {loading ? (
-              <div className="p-6">Loading...</div>
-            ) : analyses.length > 0 ? (
-              analyses.map((analysis) => (
-                <div key={analysis.id} className="p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-blue-100 p-3 rounded-lg">
-                        <FileText className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{analysis.jobTitle || analysis.jobDescription?.title || 'Unknown Job'}</h3>
-                        <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
-                      </div>
+      {/* Recent Tests */}
+      <div className="bg-white rounded-2xl shadow-sm border">
+        <div className="p-6 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">Recent Tests</h2>
+        </div>
+        <div className="divide-y">
+          {loading ? (
+            <div className="p-6">Loading...</div>
+          ) : analyses.length > 0 ? (
+            analyses.map((analysis) => (
+              <div key={analysis.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-blue-100 p-3 rounded-lg">
+                      <FileText className="h-6 w-6 text-gray-700" />
                     </div>
-                    <div className="flex items-center space-x-6">
-                      <div className="text-right">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-2xl font-bold text-green-600">
-                            {analysis.overallScore}%
-                          </span>
-                          <div className="w-16 h-2 bg-gray-200 rounded-full">
-                            <div
-                              className="h-full bg-green-500 rounded-full"
-                              style={{ width: `${analysis.overallScore}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center text-gray-500 text-sm">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {new Date(analysis.createdAt).toISOString().slice(0, 10)}
-                      </div>
-                      <button
-                        onClick={() => handleViewAnalysis(analysis.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
-                      >
-                        <Eye className="h-4 w-4" />
-                        <span>View</span>
-                      </button>
+                    <div>
+                      <h3 className="font-semibold text-gray-600">{analysis.jobTitle || analysis.jobDescription?.title || 'Unknown Job'}</h3>
+                      <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
                     </div>
                   </div>
+                  <div className="flex items-center space-x-6">
+                    <div className="text-right">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl font-bold text-green-600">
+                          {analysis.overallScore}%
+                        </span>
+                        <div className="w-16 h-2 bg-gray-200 rounded-full">
+                          <div
+                            className="h-full bg-green-500 rounded-full"
+                            style={{ width: `${analysis.overallScore}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {new Date(analysis.createdAt).toISOString().slice(0, 10)}
+                    </div>
+                    <button
+                      onClick={() => handleViewAnalysis(analysis.id)}
+                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      <span>View</span>
+                    </button>
+                  </div>
                 </div>
-              ))
-            ) : (
-              <div className="p-6">No tests found.</div>
-            )}
+              </div>
+            ))
+          ) : (
+          <div className=''>
+            <div className="p-6 text-center flex justify-center items-center">
+              <div className="text-gray-500">
+                <FileText className="h-16 w-16 mx-auto text-gray-300" />
+              </div>
+              <div className=''>
+              <p className="text-gray-600 mb-4">You haven't tested a resume yet</p>
+              <button
+            onClick={onTestResume}
+            className="border-gray-700 border text-gray-800 hover:text-white hover:bg-gray-800 px-2 py-2 rounded-lg font-medium transition-colors"
+          >
+            Start your first test now!
+          </button>
           </div>
+            </div>
+             
+          </div>
+          )}
         </div>
       </div>
     </div>
