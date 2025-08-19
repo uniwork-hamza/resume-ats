@@ -245,6 +245,14 @@ function AppContent() {
     );
   }
 
+  function ResumeScreenWrapper() {
+    return (
+      <Layout>
+        <ResumeScreen />
+      </Layout>
+    );
+  }
+
   function ResumeUploadScreen() {
     const { goTo } = useNav();
     
@@ -558,7 +566,7 @@ function AppContent() {
 
   return (
     <Routes>
-      <Route path="/resume" element={isAuthenticated ? <Layout><ResumeScreen /></Layout> : <Navigate to="/auth/signin?redirect=/resume" />} />
+      <Route path="/resume" element={isAuthenticated ? <ResumeScreenWrapper /> : <Navigate to="/auth/signin?redirect=/resume" />} />
       <Route path="/" element={<LandingScreen />} />
       <Route path="/auth/signin" element={<AuthScreen mode="signin" />} />
       <Route path="/auth/signup" element={<AuthScreen mode="signup" />} />

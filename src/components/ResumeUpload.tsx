@@ -294,13 +294,13 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
   if (hasExistingResumes === false && !uploadMethod) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <button
+        {/* <button
           onClick={onBack}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back to Dashboard</span>
-        </button>
+        </button> */}
 
         <div className="text-center mb-12">
           <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
@@ -368,13 +368,13 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
   if (!uploadMethod) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <button
+        {/* <button
           onClick={onBack}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back to Dashboard</span>
-        </button>
+        </button> */}
 
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Add Your Resume</h1>
@@ -382,45 +382,45 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
           {hasExistingResumes && (
             <button
               onClick={() => onNext(null)}
-              className="mt-4 text-blue-600 hover:text-blue-700 underline"
+              className="mt-4 text-blue-800 hover:text-blue-700 underline"
             >
               Skip and use existing resume
             </button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
           <div 
             onClick={() => setUploadMethod('upload')}
-            className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-blue-200"
+            className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-blue-800"
           >
             <div className="text-center">
-              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Upload className="h-8 w-8 text-blue-600" />
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                <Upload className="h-8 w-8 text-blue-800" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 mb-4">Upload Resume</h3>
-              <p className="text-gray-600 mb-6">
+              {/* <p className="text-gray-600 mb-6">
                 Upload your existing resume file and our AI will automatically extract and organize your information.
-              </p>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-blue-700 font-medium">✨ AI-powered parsing</p>
-                <p className="text-sm text-blue-600">Supports PDF, DOC, DOCX, TXT</p>
+              </p> */}
+              <div className="bg-gray-100 rounded-lg p-4">
+                <p className="text-sm text-blue-800 font-medium">✨ AI-powered parsing</p>
+                <p className="text-sm text-blue-800">Supports PDF, DOC, DOCX, TXT</p>
               </div>
             </div>
           </div>
 
           <div 
             onClick={() => setUploadMethod('form')}
-            className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-blue-200"
+            className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-blue-700"
           >
             <div className="text-center">
               <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                 <FileText className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 mb-4">Fill Out Form</h3>
-              <p className="text-gray-600 mb-6">
+              {/* <p className="text-gray-600 mb-6">
                 Enter your resume information using our structured form with guided fields.
-              </p>
+              </p> */}
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="text-sm text-green-700 font-medium">📝 Step-by-step guidance</p>
                 <p className="text-sm text-green-600">Perfect for creating from scratch</p>
@@ -435,14 +435,14 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
   if (uploadMethod === 'upload') {
     return (
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <button
+        {/* <button
           onClick={() => setUploadMethod(null)}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
           disabled={isLoading}
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
-        </button>
+        </button> */}
 
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Upload Your Resume</h1>
@@ -561,14 +561,14 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
   if (uploadMethod === 'form') {
     return (
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <button
+        {/* <button
           onClick={() => setUploadMethod(null)}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
           disabled={isLoading}
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
-        </button>
+        </button> */}
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Resume Information</h1>

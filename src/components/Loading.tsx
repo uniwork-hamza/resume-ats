@@ -157,9 +157,15 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
     );
   }
 
+  // Get current step data
+  const currentStepData = steps[currentStep];
+  const Icon = currentStepData.icon;
+  const isCompleted = progress === 100;
+  const stepProgress = isCompleted ? 100 : 50;
+
   return (
     <div className="flex items-center justify-center px-6 py-8">
-      <div className="max-w-4xl w-full">
+      <div className="max-w-2xl w-full">
         <div className="text-center mb-12">
           <div className="relative inline-block mb-6">
             <div className="bg-gradient-to-r from-[#182541] to-[#1e1c47] rounded-full p-4">
@@ -187,84 +193,82 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
           </div>
         </div>
 
-        {/* Steps Grid - 2 cards per row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            const isActive = index === currentStep;
-            const isCompleted = index < currentStep || (index === currentStep && progress === 100);
-            const stepProgress = isCompleted ? 100 : isActive ? 50 : 0;
-            
-            return (
+        {/* Step Indicator */}
+        <div className="mb-8">
+          <div className="flex justify-center space-x-2">
+            {steps.map((step, index) => (
               <div
                 key={step.id}
-                className={`bg-white rounded-lg border-2 p-6 transition-all duration-500 ${
-                  isActive 
-                    ? 'border-blue-200 shadow-lg transform scale-105' 
-                    : isCompleted 
-                    ? 'border-green-200 shadow-md' 
-                    : 'border-gray-100'
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index < currentStep 
+                    ? 'bg-green-500' 
+                    : index === currentStep 
+                    ? 'bg-blue-600' 
+                    : 'bg-gray-300'
                 }`}
-              >
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
-                    isCompleted 
-                      ? 'bg-green-500' 
-                      : isActive 
-                      ? 'bg-blue-900' 
-                      : 'bg-gray-300'
-                  }`}>
-                    {isCompleted ? (
-                      <CheckCircle className="h-6 w-6 text-white" />
-                    ) : (
-                      <Icon className={`h-6 w-6 text-white ${isActive ? 'animate-pulse' : ''}`} />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold text-lg ${
-                      isCompleted
-                        ? 'text-green-700'
-                        : isActive
-                        ? 'text-gary-900'
-                        : 'text-gray-600'
-                    }`}>
-                      {step.text}
-                    </h3>
-                    <p className="text-sm text-gray-500">{step.description}</p>
-                  </div>
-                </div>
-                
-                {/* Progress Bar for each step */}
-                <div className="mb-2">
-                  <div className="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>Progress</span>
-                    <span>{isCompleted ? 'Complete' : `${stepProgress}%`}</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full transition-all duration-1000 ease-out ${
-                        isCompleted 
-                          ? 'bg-green-500' 
-                          : isActive 
-                          ? 'bg-blue-900' 
-                          : 'bg-gray-300'
-                      }`}
-                      style={{ width: `${stepProgress}%` }}
-                    />
-                  </div>
-                </div>
-                
-                {/* Status indicator */}
-                {/* {isActive && isAnalyzing && (
-                  <div className="flex space-x-1 mt-2">
-                    <div className="w-2 h-2 bg-blue-900 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-900 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-blue-900 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
-                )} */}
-              </div>
-            );
-          })}
+              />
+            ))}
+          </div>
+          <div className="text-center mt-2">
+            <span className="text-sm text-gray-600">
+              Step {currentStep + 1} of {steps.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Current Step Card */}
+        <div className="bg-white rounded-lg p-8 transition-all duration-500 shadow-lg">
+          <div className="flex flex-col items-center text-center">
+            <div className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center mb-6 ${
+              isCompleted 
+                ? 'bg-green-500' 
+                : 'bg-blue-900'
+            }`}>
+              {isCompleted ? (
+                <CheckCircle className="h-8 w-8 text-white" />
+              ) : (
+                <Icon className="h-8 w-8 text-white animate-pulse" />
+              )}
+            </div>
+            
+            <div className="text-center">
+              <h3 className={`font-semibold text-2xl mb-2 ${
+                isCompleted
+                  ? 'text-green-700'
+                  : 'text-gray-900'
+              }`}>
+                {currentStepData.text}
+              </h3>
+              <p className="text-lg text-gray-500">{currentStepData.description}</p>
+            </div>
+          </div>
+          
+          {/* Progress Bar for current step */}
+          <div className="mt-8">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Progress</span>
+              <span>{isCompleted ? 'Complete' : `${stepProgress}%`}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                className={`h-3 rounded-full transition-all duration-1000 ease-out ${
+                  isCompleted 
+                    ? 'bg-green-500' 
+                    : 'bg-blue-900'
+                }`}
+                style={{ width: `${stepProgress}%` }}
+              />
+            </div>
+          </div>
+          
+          {/* Status indicator */}
+          {/* {!isCompleted && isAnalyzing && (
+            <div className="flex justify-center space-x-2 mt-4">
+              <div className="w-3 h-3 bg-blue-900 rounded-full animate-bounce"></div>
+              <div className="w-3 h-3 bg-blue-900 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-3 h-3 bg-blue-900 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
+          )} */}
         </div>
       </div>
     </div>
