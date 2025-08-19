@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Target, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
-
+import logo from '../assets/images/resumeATS-white.png'
 
 interface AuthProps {
   mode?: 'signin' | 'signup';
@@ -98,174 +98,189 @@ export default function Auth({ mode = 'signin', onLogin, onBack, onForgotPasswor
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-6"
-          >
-            <Target className="h-8 w-8" />
-            <span className="text-2xl font-bold">ResumeATS</span>
-          </button>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
-          </h2>
-          <p className="text-gray-600">
-            {isLogin 
-              ? 'Sign in to your account to continue' 
-              : 'Join thousands who improved their job prospects'
-            }
-          </p>
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="flex">
+          {/* Left Side - Welcome Section */}
+          <div className="w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
+            {/* Content */}
+            <div className="flex items-center justify-center">
+          <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" />
+          {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
         </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          {/* Error Messages */}
-          {(error || validationErrors.length > 0) && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <div className="flex items-center space-x-2 text-red-700">
-                <AlertCircle className="h-5 w-5" />
-                <span className="font-medium">Please fix the following errors:</span>
-              </div>
-              <ul className="mt-2 text-sm text-red-600 space-y-1">
-                {error && <li>{error}</li>}
-                {validationErrors.map((err, index) => (
-                  <li key={index}>{err}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
-                    placeholder="Enter your full name"
-                    required={!isLogin}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
-                  placeholder="Enter your password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </button>
-              </div>
-            </div>
-
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
-                    placeholder="Confirm your password"
-                    required={!isLogin}
-                  />
-                </div>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none disabled:hover:translate-y-0"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>{isLogin ? 'Signing In...' : 'Creating Account...'}</span>
-                </div>
-              ) : (
-                isLogin ? 'Sign In' : 'Create Account'
-              )}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center space-y-3">
-            <p className="text-gray-600">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                disabled={isLoading}
-                className="text-blue-600 hover:text-blue-700 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
+            <div className=" flex flex-col justify-center text-white px-14 mt-[3rem]">
+              {/* <button
+                onClick={onBack}
+                className="inline-flex items-center space-x-2 mb-8"
               >
-                {isLogin ? 'Sign up' : 'Sign in'}
-              </button>
-            </p>
-            
-            {isLogin && onForgotPassword && (
-              <p className="text-gray-600">
-                <button
-                  type="button"
-                  onClick={onForgotPassword}
-                  disabled={isLoading}
-                  className="text-blue-600 hover:text-blue-700 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
-                >
-                  Forgot your password?
-                </button>
+                <Target className="h-8 w-8" />
+                <span className="text-2xl font-bold">ResumeATS</span>
+              </button> */}
+               
+              <h1 className="text-4xl font-bold mb-4">Welcome</h1>
+              <p className="text-xl opacity-90">Your journey to a perfect resume starts here.</p>
+            </div>
+          </div>
+
+          {/* Right Side - Form Section */}
+          <div className="w-1/2 bg-gray-50 p-8 flex flex-col justify-center">
+            <div className="max-w-md mx-auto w-full">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {isLogin ? 'Hello! Please sign in to your account.' : 'Hello! Please create your account.'}
+              </h2>
+              <p className="text-gray-600 mb-8">
+                {isLogin 
+                  ? 'Sign in to continue your journey' 
+                  : 'Join thousands who improved their job prospects'
+                }
               </p>
-            )}
+
+              {/* Error Messages */}
+              {(error || validationErrors.length > 0) && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center space-x-2 text-red-700">
+                    <AlertCircle className="h-5 w-5" />
+                    <span className="font-medium">Please fix the following errors:</span>
+                  </div>
+                  <ul className="mt-2 text-sm text-red-600 space-y-1">
+                    {error && <li>{error}</li>}
+                    {validationErrors.map((err, index) => (
+                      <li key={index}>{err}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {!isLogin && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        disabled={isLoading}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                        placeholder="Enter your full name"
+                        required={!isLogin}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={isLoading}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      disabled={isLoading}
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
+                </div>
+
+                {!isLogin && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        disabled={isLoading}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                        placeholder="Confirm your password"
+                        required={!isLogin}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-gray-900 hover:bg-gray-700 text-white disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none disabled:hover:translate-y-0"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>{isLogin ? 'Signing In...' : 'Creating Account...'}</span>
+                    </div>
+                  ) : (
+                    isLogin ? 'Sign In' : 'Create Account'
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-6 text-center space-y-3">
+                <p className="text-gray-600">
+                  {isLogin ? "Don't have an account? " : "Already have an account? "}
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(!isLogin)}
+                    disabled={isLoading}
+                    className="text-blue-900 hover:text-gray-800 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
+                  >
+                    {isLogin ? 'Sign up' : 'Sign in'}
+                  </button>
+                </p>
+                
+                {isLogin && onForgotPassword && (
+                  <p className="text-gray-600">
+                    <button
+                      type="button"
+                      onClick={onForgotPassword}
+                      disabled={isLoading}
+                      className="text-blue-900 hover:text-gray-800 font-medium underline disabled:text-gray-400 disabled:cursor-not-allowed disabled:no-underline"
+                    >
+                      Forgot your password?
+                    </button>
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

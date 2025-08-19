@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Target, ChevronDown, X, FileText, LayoutDashboard, LogOut, ClipboardPlus  } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/images/resumeATS.png'
+import logo from '../assets/images/resumeATS-white.png'
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -61,7 +61,7 @@ export default function Header() {
 
         {/* Logo and App Name */}
         <div className="flex items-center justify-center py-8 px-6 border-b border-gray-700">
-          <img src={logo} alt="ResumeATS Logo" className="h-12 w-12 object-contain" />
+          <img src={logo} alt="ResumeATS Logo" className="" />
           {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
         </div>
 
