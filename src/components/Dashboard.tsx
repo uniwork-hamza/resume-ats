@@ -57,7 +57,7 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-14 py-12">
+    <div className="max-w-7xl mx-auto md:px-14 px-4 py-12">
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Get Your Resume Job-Ready with AI-Powered Insights</h1>

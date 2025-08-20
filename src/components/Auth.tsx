@@ -103,11 +103,11 @@ export default function Auth({ mode = 'signin', onLogin, onBack, onForgotPasswor
           {/* Left Side - Welcome Section */}
           <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
             {/* Content */}
-            <div className="relative z-10 flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-              <div className="flex items-center justify-center">
-                <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" onClick={onBack} />
+            <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+              <div className="flex items-center md:justify-center">
+                <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" onClick={onBack} />
               </div>
-              <div className='flex flex-col justify-center text-white md:px-14 mt-[3rem]'>
+              <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
                 <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome</h1>
                 <p className="text-lg lg:text-xl opacity-90">Your journey to a perfect resume starts here.</p>
               </div>

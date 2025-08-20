@@ -110,9 +110,9 @@ export default function ResetPassword() {
             {/* Left Side - Welcome Section */}
             <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
               {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-                <div className="flex items-center justify-center">
-                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" onClick={() => navigate('/auth/signin')} />
+              <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+                <div className="flex items-center md:justify-center">
+                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" onClick={() => navigate('/auth/signin')} />
                 </div>
                 <div className='flex flex-col justify-center text-white md:px-14 my-[3rem]'>
                   <h1 className="text-3xl lg:text-4xl font-bold mb-4">Password Reset</h1>
@@ -142,9 +142,9 @@ export default function ResetPassword() {
             {/* Left Side - Welcome Section */}
             <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
               {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-                <div className="flex items-center justify-center">
-                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" onClick={() => navigate('/auth/signin')} />
+              <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+                <div className="flex items-center md:justify-center">
+                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" onClick={() => navigate('/auth/signin')} />
                 </div>
                 <div className='flex flex-col justify-center text-white md:px-14 my-[3rem]'>
                   <h1 className="text-3xl lg:text-4xl font-bold mb-4">Success!</h1>
@@ -188,11 +188,11 @@ export default function ResetPassword() {
             {/* Left Side - Welcome Section */}
             <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
               {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-                <div className="flex items-center justify-center">
-                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" onClick={() => navigate('/auth/signin')} />
+              <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+                <div className="flex items-center md:justify-center">
+                  <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" onClick={() => navigate('/auth/signin')} />
                 </div>
-                <div className='flex flex-col justify-center text-white md:px-14 mt-[3rem]'>
+                <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
                   <h1 className="text-3xl lg:text-4xl font-bold mb-4">Invalid Link</h1>
                   <p className="text-lg lg:text-xl opacity-90">This reset link is no longer valid.</p>
                 </div>
@@ -241,11 +241,11 @@ export default function ResetPassword() {
           {/* Left Side - Welcome Section */}
           <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
             {/* Content */}
-            <div className="relative z-10 h-full flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-              <div className="flex items-center justify-center">
-                <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" />
+            <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+              <div className="flex items-center md:justify-center">
+                <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" />
               </div>
-              <div className='flex flex-col justify-center text-white md:px-14 mt-[3rem]'>
+              <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
                 <h1 className="text-3xl lg:text-4xl font-bold mb-4">Reset Password</h1>
                 <p className="text-lg lg:text-xl opacity-90">Create a new secure password for your account.</p>
               </div>

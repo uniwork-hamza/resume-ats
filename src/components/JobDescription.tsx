@@ -81,7 +81,7 @@ Preferred Qualifications:
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-14 py-12">
+    <div className="max-w-7xl mx-auto md:px-14 px-4 py-12">
       {/* <button
         onClick={onBack}
         className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"

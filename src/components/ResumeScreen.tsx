@@ -49,7 +49,7 @@ export default function ResumeScreen() {
   // If user has no resume, redirect to upload page
   if (!resume) {
     return (
-      <div className="max-w-7xl mx-auto px-14 py-12">
+      <div className="max-w-7xl mx-auto md:px-14 px-4 py-12">
         {/* <button 
           onClick={() => navigate(-1)} 
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"

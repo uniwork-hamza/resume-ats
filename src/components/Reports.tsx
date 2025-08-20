@@ -79,7 +79,7 @@ export default function Reports() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-14 py-12">
+        <div className="max-w-7xl mx-auto md:px-14 px-4 py-12">
             {/* Welcome Section */}
             <div className="mb-8">
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">
@@ -91,7 +91,7 @@ export default function Reports() {
             </div>
 
             {/* Main Cards Grid */}
-            <div className="grid grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1md:grid-cols-2 gap-8 mb-12">
 
                 {/* Tests Completed */}
                 <div className="bg-white rounded-2xl p-6 shadow-lg">
