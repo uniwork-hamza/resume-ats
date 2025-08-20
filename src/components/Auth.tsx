@@ -99,35 +99,28 @@ export default function Auth({ mode = 'signin', onLogin, onBack, onForgotPasswor
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
           {/* Left Side - Welcome Section */}
-          <div className="w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
+          <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
             {/* Content */}
-            <div className="flex items-center justify-center">
-          <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]"  onClick={onBack} />
-          {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
-        </div>
-            <div className=" flex flex-col justify-center text-white px-14 mt-[3rem]">
-              {/* <button
-                onClick={onBack}
-                className="inline-flex items-center space-x-2 mb-8"
-              >
-                <Target className="h-8 w-8" />
-                <span className="text-2xl font-bold">ResumeATS</span>
-              </button> */}
-               
-              <h1 className="text-4xl font-bold mb-4">Welcome</h1>
-              <p className="text-xl opacity-90">Your journey to a perfect resume starts here.</p>
+            <div className="relative z-10 flex flex-col justify-center text-white px-8 py-12 lg:py-0">
+              <div className="flex items-center justify-center">
+                <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" onClick={onBack} />
+              </div>
+              <div className='flex flex-col justify-center text-white md:px-14 mt-[3rem]'>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome</h1>
+                <p className="text-lg lg:text-xl opacity-90">Your journey to a perfect resume starts here.</p>
+              </div>
             </div>
           </div>
 
           {/* Right Side - Form Section */}
-          <div className="w-1/2 bg-gray-50 p-8 flex flex-col justify-center">
+          <div className="w-full lg:w-1/2 bg-gray-50 p-6 lg:p-8 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">
                 {isLogin ? 'Hello! Please sign in to your account.' : 'Hello! Please create your account.'}
               </h2>
-              <p className="text-gray-600 mb-8">
+              <p className="text-gray-600 mb-6 lg:mb-8">
                 {isLogin 
                   ? 'Sign in to continue your journey' 
                   : 'Join thousands who improved their job prospects'
