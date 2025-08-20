@@ -91,7 +91,7 @@ export default function Reports() {
             </div>
 
             {/* Main Cards Grid */}
-            <div className="grid grid-cols-1md:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
                 {/* Tests Completed */}
                 <div className="bg-white rounded-2xl p-6 shadow-lg">
@@ -135,7 +135,7 @@ export default function Reports() {
                         {analyses.map((analysis) => (
                             <div
                                 key={analysis.id}
-                                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                className="flex flex-wrap items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
                                 <div className="flex items-center space-x-4">
                                     <div className="bg-blue-100 p-3 rounded-lg">
@@ -147,7 +147,7 @@ export default function Reports() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-6">
+                                <div className="flex items-center gap-4 md:space-x-6 flex-wrap">
                                     <div className="text-right">
                                         <div className="flex items-center space-x-2">
                                             <span className="text-2xl font-bold text-green-600">

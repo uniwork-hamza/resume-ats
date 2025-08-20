@@ -120,7 +120,7 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
           ) : analyses.length > 0 ? (
             analyses.map((analysis) => (
               <div key={analysis.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center flex-wrap justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="bg-blue-100 p-3 rounded-lg">
                       <FileText className="h-6 w-6 text-gray-700" />
@@ -130,7 +130,7 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
                       <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-6">
+                  <div className="flex items-center gap-4 md:space-x-6 flex-wrap">
                     <div className="text-right">
                       <div className="flex items-center space-x-2">
                         <span className="text-2xl font-bold text-green-600">

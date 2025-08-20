@@ -114,7 +114,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
     // Render the PDF template
     const { createRoot } = await import('react-dom/client');
     const root = createRoot(tempContainer);
-    
+
     // Create the PDF template component
     const pdfTemplate = React.createElement(PDFReportTemplate, { analysisData });
     root.render(pdfTemplate);
@@ -159,8 +159,8 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
   return (
     <div id="analysis-report" className="px-14 py-12">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b mb-8">
-        <div className="flex items-center justify-between py-4 px-4">
+      <div className="">
+        <div className="flex items-center justify-end py-4 px-4">
           {/* <button
             onClick={onBack}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
@@ -168,9 +168,9 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
             <ArrowLeft className="h-5 w-5" />
             <span>Back to Dashboard</span>
           </button> */}
-          <div className="flex items-center space-x-4">
-            <button onClick={handleDownload} className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
-              <Download className="h-4 w-4" />
+          <div className="float-right">
+            <button onClick={handleDownload} className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <Download className="h-4 w-4 text-white" />
               <span>Download Report</span>
             </button>
           </div>
@@ -196,7 +196,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
             </div>
           </div>
           <div className="w-full bg-white bg-opacity-20 rounded-full h-3">
-            <div 
+            <div
               className="bg-white h-3 rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${overallScore}%` }}
             />
@@ -209,7 +209,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl shadow-sm border p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Detailed Analysis</h2>
-            
+
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
@@ -276,6 +276,29 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
               </div>
             </div>
           </div>
+          {/* Keyword Analysis */}
+          <div className="bg-white rounded-2xl shadow-sm border p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Keyword Analysis</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {keywordData.map((item, index) => (
+                <div key={index} className="flex flex-col  justify-between p-4 border border-gray-200 rounded-lg">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{item.category}</h3>
+                    <p className="text-sm text-gray-600">{item.matched} of {item.total} keywords found</p>
+                  </div>
+                  <div className="">
+                    <div className={`text-lg font-bold ${getScoreColor(item.percentage)}`}>{item.percentage}%</div>
+                    <div className="w-24 h-2 bg-gray-200 rounded-full">
+                      <div
+                        className={`h-full rounded-full transition-all duration-1000 ease-out ${getProgressColor(item.percentage)}`}
+                        style={{ width: `${item.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Detailed Analysis Insights */}
           {detailedAnalysis && (
@@ -284,7 +307,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 <Brain className="h-6 w-6 text-purple-600" />
                 <span>Deep Analysis Insights</span>
               </h2>
-              
+
               <div className="space-y-6">
                 {/* Overall Fit */}
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -332,7 +355,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 <Lightbulb className="h-6 w-6 text-yellow-600" />
                 <span>Professional Recommendations</span>
               </h2>
-              
+
               <div className="space-y-6">
                 {/* Experience Gaps */}
                 {recommendations.experienceGaps && recommendations.experienceGaps.length > 0 && (
@@ -391,87 +414,64 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
             </div>
           )}
 
-          {/* Keyword Analysis */}
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Keyword Analysis</h2>
-            <div className="space-y-4">
-              {keywordData.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{item.category}</h3>
-                    <p className="text-sm text-gray-600">{item.matched} of {item.total} keywords found</p>
-                  </div>
-                  <div className="text-right">
-                    <div className={`text-lg font-bold ${getScoreColor(item.percentage)}`}>{item.percentage}%</div>
-                    <div className="w-24 h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-1000 ease-out ${getProgressColor(item.percentage)}`}
-                        style={{ width: `${item.percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Missing Keywords */}
-          {missingKeywords.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
-            <p className="text-gray-600 mb-4">
-              Consider adding these important keywords from the job description to improve your ATS score:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {missingKeywords.map((keyword, index) => (
-                <span
-                  key={index}
-                  className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
-          </div>
-          )}
+
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Strengths */}
           {strengths.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-              <span>Strengths</span>
-            </h3>
-            <div className="space-y-3">
-              {strengths.map((strength, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">{strength}</p>
-                </div>
-              ))}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+                <span>Strengths</span>
+              </h3>
+              <div className="space-y-3">
+                {strengths.map((strength, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-gray-700">{strength}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
           )}
-
+          {/* Missing Keywords */}
+          {missingKeywords.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
+              <p className="text-gray-600 mb-4">
+                Consider adding these important keywords from the job description to improve your ATS score:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {missingKeywords.map((keyword, index) => (
+                  <span
+                    key={index}
+                    className="bg-red-50 text-red-700 px-3 py-2 rounded-lg font-medium border border-red-200"
+                  >
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Areas for Improvement */}
           {improvements.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-              <AlertTriangle className="h-6 w-6 text-orange-600" />
-              <span>Areas for Improvement</span>
-            </h3>
-            <div className="space-y-3">
-              {improvements.map((improvement, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">{improvement}</p>
-                </div>
-              ))}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <AlertTriangle className="h-6 w-6 text-orange-600" />
+                <span>Areas for Improvement</span>
+              </h3>
+              <div className="space-y-3">
+                {improvements.map((improvement, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-gray-700">{improvement}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
           )}
 
           {/* Action Buttons */}

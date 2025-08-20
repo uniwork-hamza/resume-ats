@@ -121,7 +121,7 @@ Preferred Qualifications:
                 <button
                   type="submit"
                   disabled={!jobDescription.trim()}
-                  className="bg-gray-900 hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center space-x-2"
+                  className="bg-gray-900 hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 md:px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center space-x-2"
                 >
                   <span>Analyze Resume</span>
                   <ArrowRight className="h-5 w-5" />
