@@ -104,7 +104,7 @@ export default function Auth({ mode = 'signin', onLogin, onBack, onForgotPasswor
           <div className="w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
             {/* Content */}
             <div className="flex items-center justify-center">
-          <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]" />
+          <img src={logo} alt="ResumeATS Logo" className="w-[253px] mt-[3rem]"  onClick={onBack} />
           {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
         </div>
             <div className=" flex flex-col justify-center text-white px-14 mt-[3rem]">
