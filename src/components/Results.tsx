@@ -157,17 +157,17 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
   };
 
   return (
-    <div id="analysis-report" className="px-6 py-8">
+    <div id="analysis-report" className="px-14 py-12">
       {/* Header */}
       <div className="bg-white shadow-sm border-b mb-8">
-        <div className="flex items-center justify-between py-4">
-          <button
+        <div className="flex items-center justify-between py-4 px-4">
+          {/* <button
             onClick={onBack}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
           >
             <ArrowLeft className="h-5 w-5" />
             <span>Back to Dashboard</span>
-          </button>
+          </button> */}
           <div className="flex items-center space-x-4">
             <button onClick={handleDownload} className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
               <Download className="h-4 w-4" />
@@ -179,7 +179,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
 
       {/* Overall Score */}
       <div className="mb-8">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
+        <div className="bg-gradient-to-r from-[#182541] to-[#1e1c47] rounded-2xl p-8 text-white">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Resume Analysis Complete</h1>

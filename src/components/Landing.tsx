@@ -120,12 +120,12 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       <section className="relative px-6 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-6 py-3 mb-8">
+            {/* <div className="inline-flex items-center bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-6 py-3 mb-8">
               <Star className="h-5 w-5 text-yellow-400 mr-2" />
               <span className="text-blue-200 font-medium">
                 {isAuthenticated ? "Ready to optimize your next resume?" : "Trusted by 50,000+ job seekers"}
               </span>
-            </div>
+            </div> */}
             
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight">
               {isAuthenticated ? (
@@ -189,7 +189,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
+            {/* <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
               <div className="text-gray-400 text-sm">Trusted by professionals at:</div>
               <div className="flex items-center space-x-8 text-gray-200 font-semibold">
                 <span>Google</span>
@@ -198,7 +198,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 <span>Apple</span>
                 <span>Meta</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

@@ -472,7 +472,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
           {!uploadedFile ? (
             <div
               className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-                dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                dragActive ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-100 border hover:border-blue-800 '
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -492,7 +492,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
               />
               <label
                 htmlFor="resume-upload"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-700 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Choose File
               </label>

@@ -130,25 +130,8 @@ Preferred Qualifications:
             </form>
           </div>
         </div>
-
-        {/* Pro Tip Sidebar */}
-        <div className="space-y-6">
-          <div className="bg-blue-50 rounded-xl p-6">
-            <div className="flex items-start space-x-3">
-              <FileText className="h-6 w-6 text-blue-900 flex-shrink-0 mt-1" />
-              <div>
-                <h4 className="font-semibold text-blue-900 mb-2">Pro Tip</h4>
-                <p className="text-blue-900 text-sm">
-                  Include the complete job description with requirements, responsibilities, and preferred qualifications for the most accurate analysis.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Sample Jobs Section - Full width below the grid */}
-      <div className="mt-8 bg-white rounded-2xl shadow-lg p-8">
+      <div className="bg-white rounded-2xl shadow-lg p-8">
         <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
           <Briefcase className="h-6 w-6" />
           <span>Sample Jobs</span>
@@ -157,7 +140,7 @@ Preferred Qualifications:
           Try one of these sample job descriptions to see how the analysis works
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {sampleJobs.map((job, index) => (
             <div
               key={index}
@@ -172,7 +155,25 @@ Preferred Qualifications:
             </div>
           ))}
         </div>
+         {/* Pro Tip Sidebar */}
+         <div className="space-y-6 mt-8">
+          <div className="bg-blue-50 rounded-xl p-6">
+            <div className="flex items-start space-x-3">
+              <FileText className="h-6 w-6 text-blue-900 flex-shrink-0 mt-1" />
+              <div>
+                <h4 className="font-semibold text-blue-900 mb-2">Pro Tip</h4>
+                <p className="text-blue-900 text-sm">
+                  Include the complete job description with requirements, responsibilities, and preferred qualifications for the most accurate analysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+       
+      </div>
+
+
     </div>
   );
 }
