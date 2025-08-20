@@ -49,18 +49,18 @@ export default function ResumeScreen() {
   // If user has no resume, redirect to upload page
   if (!resume) {
     return (
-      <div className="max-w-7xl mx-auto px-14 py-8">
-        <button 
+      <div className="max-w-7xl mx-auto px-14 py-12">
+        {/* <button 
           onClick={() => navigate(-1)} 
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
         </button>
-        
+         */}
         <div className="text-center">
-          <div className="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-            <FileText className="h-12 w-12 text-blue-600" />
+          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <FileText className="h-12 w-12 text-blue-800" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">No Resume Found</h1>
           <p className="text-xl text-blue-900 mb-8">
@@ -69,7 +69,7 @@ export default function ResumeScreen() {
           
           <button
             onClick={handleUploadNewResume}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg inline-flex items-center space-x-2 transition-colors"
+            className="bg-gray-900 hover:bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold text-lg inline-flex items-center space-x-2 transition-colors"
           >
             <Upload className="h-6 w-6" />
             <span>Upload Your First Resume</span>

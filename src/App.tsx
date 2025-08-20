@@ -5,6 +5,7 @@ import { resumeApi, Resume, Analysis } from './services/api';
 import Landing from './components/Landing';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
+import Reports from './components/Reports';
 import ResumeUpload from './components/ResumeUpload';
 import JobDescription from './components/JobDescription';
 import Loading from './components/Loading';
@@ -241,6 +242,14 @@ function AppContent() {
         <Dashboard
           onTestResume={handleStartNewTest}
         />
+      </Layout>
+    );
+  }
+
+  function ReportsScreen() {
+    return (
+      <Layout>
+        <Reports />
       </Layout>
     );
   }
@@ -573,6 +582,7 @@ function AppContent() {
       <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/dashboard" element={isAuthenticated ? <DashboardScreen /> : <Navigate to="/auth/signin?redirect=/dashboard" />} />
+      <Route path="/reports" element={isAuthenticated ? <ReportsScreen /> : <Navigate to="/auth/signin?redirect=/reports" />} />
       <Route path="/resume-upload" element={isAuthenticated ? <ResumeUploadScreen /> : <Navigate to="/auth/signin?redirect=/resume-upload" />} />
       <Route path="/review-resume" element={isAuthenticated && parsedResumeData ? <ReviewResumeScreen /> : <Navigate to="/resume-upload" />} />
       <Route path="/job-description" element={isAuthenticated && resumeData ? <JobDescriptionScreen /> : <Navigate to="/auth/signin?redirect=/job-description" />} />

@@ -154,7 +154,7 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-12">
         <button
           onClick={onBack}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"

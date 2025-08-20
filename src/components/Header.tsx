@@ -60,7 +60,7 @@ export default function Header() {
         </div>
 
         {/* Logo and App Name */}
-        <div className="flex items-center justify-center py-8 px-6 border-b border-gray-700">
+        <div className="flex items-center justify-center py-4 px-6 border-b border-gray-700">
           <img src={logo} alt="ResumeATS Logo" className="" />
           {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
         </div>
@@ -86,7 +86,7 @@ export default function Header() {
             </button>
             <button
               type="button"
-              onClick={() => { setSidebarOpen(false); navigate('/dashboard'); }}
+              onClick={() => { setSidebarOpen(false); navigate('/reports'); }}
               className="w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-150 flex items-center space-x-3"
             >
               <ClipboardPlus  className="h-5 w-5" />
