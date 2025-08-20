@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle, Target, TrendingUp, Users, Star, ArrowRight, Zap, Shield, Clock, Award, FileText, BarChart3 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../assets/images/resumeATS-white.png'
 
 interface LandingProps {
   onGetStarted: () => void;
@@ -45,12 +46,12 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       description: "Advanced machine learning algorithms analyze your resume against job requirements in seconds",
       color: "from-yellow-400 to-orange-500"
     },
-    {
-      icon: Shield,
-      title: "ATS Optimization",
-      description: "Ensure your resume passes through Applicant Tracking Systems with our specialized formatting",
-      color: "from-green-400 to-blue-500"
-    },
+    // {
+    //   icon: Shield,
+    //   title: "ATS Optimization",
+    //   description: "Ensure your resume passes through Applicant Tracking Systems with our specialized formatting",
+    //   color: "from-green-400 to-blue-500"
+    // },
     {
       icon: BarChart3,
       title: "Detailed Insights",
@@ -66,7 +67,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  bg-gradient-to-r from-[#182541] to-[#353354] relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -75,26 +76,30 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </div>
 
       {/* Header */}
-      <header className="relative z-10 px-6 py-6">
+      <header className="relative z-10 px-14 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          {/* <div className="flex items-center space-x-3">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-xl">
               <Target className="h-8 w-8 text-white" />
             </div>
             <span className="text-2xl font-bold text-white">ResumeATS</span>
-          </div>
+          </div> */}
+          <div className="flex items-center justify-center">
+          <img src={logo} alt="ResumeATS Logo" className="w-[230px]" />
+          {/* <span className="text-2xl font-bold text-white">ResumeATS</span> */}
+        </div>
           <div className="flex items-center space-x-6">
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              <a href="#testimonials" className="text-gray-300 hover:text-white transition-colors">Reviews</a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
+              {/* <a href="#testimonials" className="text-gray-300 hover:text-white transition-colors">Reviews</a>
+              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a> */}
             </nav>
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <span className="text-gray-300">Welcome back, {user?.name || user?.email}!</span>
+                {/* <span className="text-gray-300">Welcome back, {user?.name || user?.email}!</span> */}
                 <button
                   onClick={onGoToDashboard}
-                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="bg-gradient-to-r from-[#5d81cf] to-[#5d81cf] hover:from-[#5d81cf] hover:to-[#5d81cf] text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Go to Dashboard
                 </button>
@@ -153,7 +158,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <button
                     onClick={onGoToDashboard}
-                    className="group bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-green-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
+                    className="group bg-gradient-to-r from-[#5d81cf] to-[#5d81cf] hover:from-[#5d81cf] hover:to-[#5d81cf] text-white text-lg px-12 py-4 rounded-2xl font-bold transition-all duration-300 shadow-2xl hover:shadow-green-500/25 transform hover:-translate-y-1 flex items-center space-x-3"
                   >
                     <span>Go to Dashboard</span>
                     <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
@@ -199,7 +204,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </section>
 
       {/* Stats Section */}
-      <section className="relative px-6 py-16">
+      <section className="relative px-14 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center group">
@@ -235,7 +240,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative px-6 py-20">
+      <section id="features" className="relative px-14 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-white mb-6">Powerful Features</h2>
@@ -265,7 +270,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </section>
 
       {/* How It Works */}
-      <section className="relative px-6 py-20">
+      <section className="relative px-14 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-white mb-6">How It Works</h2>
@@ -280,7 +285,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform shadow-2xl">
                   1
                 </div>
-                <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-x-1/2 hidden md:block"></div>
+                {/* <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-x-1/2 hidden md:block"></div> */}
               </div>
               <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
                 <FileText className="h-12 w-12 text-blue-400 mx-auto mb-4" />
@@ -293,7 +298,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
                 <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform shadow-2xl">
                   2
                 </div>
-                <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-500 to-pink-600 transform -translate-x-1/2 hidden md:block"></div>
+                {/* <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-500 to-pink-600 transform -translate-x-1/2 hidden md:block"></div> */}
               </div>
               <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
                 <Target className="h-12 w-12 text-purple-400 mx-auto mb-4" />
@@ -303,10 +308,10 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
             </div>
             <div className="text-center group">
               <div className="relative mb-8">
-                <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                <div className="bg-gradient-to-r from-[#5d81cf] to-[#5d81cf] text-white rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform shadow-2xl">
                   3
                 </div>
-                <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-green-500 to-blue-600 transform -translate-x-1/2 hidden md:block"></div>
+                {/* <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-green-500 to-blue-600 transform -translate-x-1/2 hidden md:block"></div> */}
               </div>
               <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
                 <Award className="h-12 w-12 text-green-400 mx-auto mb-4" />
@@ -319,7 +324,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="relative px-6 py-20">
+      {/* <section id="testimonials" className="relative px-6 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-white mb-6">Success Stories</h2>
@@ -355,10 +360,10 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section className="relative px-6 py-20">
+      {/* <section className="relative px-6 py-20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-white/20 rounded-3xl p-12">
             <h2 className="text-5xl font-bold text-white mb-6">Ready to Land Your Dream Job?</h2>
@@ -375,7 +380,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
             <p className="text-gray-400 mt-4">No credit card required • Results in under 30 seconds</p>
           </div>
         </div>
-      </section>
+      </section> */}
 
 
     </div>
