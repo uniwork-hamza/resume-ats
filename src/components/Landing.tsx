@@ -76,7 +76,7 @@ export default function Landing({ onGetStarted, onGoToDashboard, onStartAnalysis
       </div>
 
       {/* Header */}
-      <header className="relative z-10 px-14 py-6">
+      <header className="relative z-10 px-4 md:px-14 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* <div className="flex items-center space-x-3">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-xl">
