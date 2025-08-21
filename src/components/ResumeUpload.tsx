@@ -514,7 +514,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
                 <button
                   onClick={handleFileUpload}
                   disabled={isLoading}
-                  className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center space-x-2 bg-gray-900  hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <>
@@ -663,7 +663,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
               <button
                 type="button"
                 onClick={addExperience}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="bg-gray-900  hover:bg-gray-700 text-white  px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 disabled={isLoading}
               >
                 Add Experience
@@ -736,7 +736,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
               <button
                 type="button"
                 onClick={addEducation}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="bg-gray-900  hover:bg-gray-700 text-white  px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 disabled={isLoading}
               >
                 Add Education
@@ -821,7 +821,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 bg-gray-900  hover:bg-gray-700 text-white  px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Loader2, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { resumeApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import Header from './Header';
 
 interface ResumeFormData {
   name: string;
@@ -153,32 +152,31 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <button
+      <div className="max-w-4xl mx-auto py-12">
+        {/* <button
           onClick={onBack}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
           disabled={isLoading}
         >
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
-        </button>
+        </button> */}
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Review Your Resume</h1>
-          <p className="text-xl text-gray-600">
-            We've extracted your information from <span className="font-medium text-blue-600">{fileName}</span>. 
+          <p className="text-xl text-blue-800">
+            We've extracted your information from <span className="font-medium text-blue-800">{fileName}</span>. 
             Please review and complete any missing fields.
           </p>
         </div>
 
         {/* AI Extraction Notice */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div className="bg-gray-100 border border-blue-800 rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-blue-600" />
-            <span className="text-blue-800 font-medium">✨ AI Extraction Complete</span>
+            <CheckCircle className="h-5 w-5 text-blue-900" />
+            <span className="text-blue-900 font-medium">✨ AI Extraction Complete</span>
           </div>
-          <p className="text-blue-700 mt-2">
+          <p className="text-blue-900 mt-2">
             Your resume has been automatically parsed. Please review all fields and fill in any missing information before saving.
           </p>
         </div>
@@ -275,7 +273,7 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
               <button
                 type="button"
                 onClick={addExperience}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-gray-900  hover:bg-gray-700 text-white  transition-colors"
                 disabled={isLoading}
               >
                 Add Experience
@@ -348,7 +346,7 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
               <button
                 type="button"
                 onClick={addEducation}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="bg-gray-900  hover:bg-gray-700 text-white  px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 disabled={isLoading}
               >
                 Add Education
@@ -442,7 +440,7 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 bg-gray-900  hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
