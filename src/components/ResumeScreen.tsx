@@ -83,7 +83,7 @@ export default function ResumeScreen() {
   return (
     <div className="max-w-7xl mx-auto md:px-14 py-8 px-4">
       <div className="bg-gray-100 border border-blue-800 rounded-lg p-4 mb-6 flex flex-wrap justify-between">
-        <div className="flex items-center space-x-3 mb-4">
+        <div className="flex items-center space-x-3">
           <FileText className="h-6 w-6 text-blue-800" />
           <div>
             <h3 className="font-semibold text-blue-900">Current Resume</h3>

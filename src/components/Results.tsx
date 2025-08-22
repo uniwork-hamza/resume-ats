@@ -263,8 +263,8 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 <div className="flex items-center space-x-3">
                   <FileText className="h-6 w-6 text-purple-600" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Format Score</h3>
-                    <p className="text-sm text-gray-600">ATS-friendliness of your resume format</p>
+                    <h3 className="font-semibold text-gray-900">Structure Score</h3>
+                    <p className="text-sm text-gray-600">Clarity of Resume structure</p>
                   </div>
                 </div>
                 <div className="text-right">

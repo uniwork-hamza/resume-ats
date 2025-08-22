@@ -193,8 +193,8 @@ export default function ResetPassword() {
                   <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" onClick={() => navigate('/auth/signin')} />
                 </div>
                 <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
-                  <h1 className="text-3xl lg:text-4xl font-bold mb-4">Invalid Link</h1>
-                  <p className="text-lg lg:text-xl opacity-90">This reset link is no longer valid.</p>
+                  <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-center">Invalid Link</h1>
+                  <p className="text-lg lg:text-xl opacity-90 text-center">This reset link is no longer valid.</p>
                 </div>
               </div>
             </div>
@@ -246,8 +246,8 @@ export default function ResetPassword() {
                 <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" />
               </div>
               <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Reset Password</h1>
-                <p className="text-lg lg:text-xl opacity-90">Create a new secure password for your account.</p>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-center">Reset Password</h1>
+                <p className="text-lg lg:text-xl opacity-90 text-center">Create a new secure password for your account.</p>
               </div>
             </div>
           </div>
@@ -255,10 +255,10 @@ export default function ResetPassword() {
           {/* Right Side - Form Section */}
           <div className="w-full lg:w-1/2 bg-gray-50 p-6 lg:p-8 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2 text-center">
                 Set New Password
               </h2>
-              <p className="text-gray-600 mb-6 lg:mb-8">
+              <p className="text-gray-600 mb-6 lg:mb-8 text-center">
                 Enter your new password below to complete the reset process.
               </p>
 

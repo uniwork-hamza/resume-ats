@@ -70,7 +70,7 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
           <div className="bg-gradient-to-r from-[#182541] to-[#1e1c47] rounded-2xl p-8 text-white">
             <h2 className="text-2xl font-bold mb-4">Test Your Resume</h2>
             <p className="text-blue-100 mb-6">
-              Upload your resume and compare it against a job description to get instant feedback and optimization suggestions.
+              Upload your resume and compare it against a job description to get instant feedback and meaningful feedback.
             </p>
             <button
               onClick={onTestResume}
@@ -127,18 +127,18 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-600">{analysis.jobTitle || analysis.jobDescription?.title || 'Unknown Job'}</h3>
-                      <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
+                      {/* <p className="text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p> */}
                     </div>
                   </div>
                   <div className="flex items-center gap-4 md:space-x-6 flex-wrap">
                     <div className="text-right">
                       <div className="flex items-center space-x-2">
-                        <span className="text-2xl font-bold text-green-600">
+                        <span className="text-2xl font-bold text-blue-900">
                           {analysis.overallScore}%
                         </span>
                         <div className="w-16 h-2 bg-gray-200 rounded-full">
                           <div
-                            className="h-full bg-green-500 rounded-full"
+                            className="h-full bg-blue-900 rounded-full"
                             style={{ width: `${analysis.overallScore}%` }}
                           />
                         </div>

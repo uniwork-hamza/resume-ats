@@ -448,6 +448,15 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Upload Your Resume</h1>
           <p className="text-xl text-gray-600">Our AI will automatically extract and organize your information</p>
         </div>
+        <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="h-5 w-5 text-gray-600" />
+              <span className="text-gray-800 font-medium">Quick Tip</span>
+            </div>
+            <p className="text-gray-700 mt-2">
+              Many Applicant Tracking Systems (ATS) have difficulty reading embedded graphics, tables, images, or unusual formatting. To ensure smooth parsing and better analysis, keep your resume text-based with a clear and consistent structure.
+            </p>
+          </div>
 
         {/* Error/Success Messages */}
         {error && (

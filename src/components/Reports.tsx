@@ -86,7 +86,7 @@ export default function Reports() {
                     Your Resume Performance Reports
                 </h1>
                 <p className="text-xl text-gray-600">
-                    Track your test history, scores, and insights to improve your resume effectiveness.
+                    Keep track of your history, results, and insights to refine your resume strategy.
                 </p>
             </div>
 
@@ -143,19 +143,19 @@ export default function Reports() {
                                     </div>
                                     <div>
                                         <p className="font-semibold text-gray-600">{analysis.jobTitle || analysis.jobDescription?.title || 'Unknown Job'}</p>
-                                        <p className="text-sm text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p>
+                                        {/* <p className="text-sm text-gray-600">{analysis.resume?.title || 'Unknown Resume'}</p> */}
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-4 md:space-x-6 flex-wrap">
                                     <div className="text-right">
                                         <div className="flex items-center space-x-2">
-                                            <span className="text-2xl font-bold text-green-600">
+                                            <span className="text-2xl font-bold text-blue-900">
                                                 {analysis.overallScore}%
                                             </span>
                                             <div className="w-16 h-2 bg-gray-200 rounded-full">
                                                 <div
-                                                    className="h-full bg-green-500 rounded-full"
+                                                    className="h-full bg-blue-900 rounded-full"
                                                     style={{ width: `${analysis.overallScore}%` }}
                                                 />
                                             </div>

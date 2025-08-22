@@ -50,16 +50,23 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
             {/* Left Side - Welcome Section */}
             <div className="w-full lg:w-1/2 bg-gradient-to-r from-[#182541] to-[#1e1c47] relative overflow-hidden">
               {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center text-white px-8 py-12 lg:py-0">
-                <button
+              <div className="relative z-10 h-full flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
+                {/* <button
                   onClick={onBack}
                   className="inline-flex items-center space-x-2 mb-8"
                 >
                   <Target className="h-8 w-8" />
                   <span className="text-2xl font-bold">ResumeATS</span>
-                </button>
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Password Reset</h1>
-                <p className="text-lg lg:text-xl opacity-90">We've got you covered.</p>
+                </button> */}
+                <div className="flex items-center md:justify-center">
+                <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" />
+              </div>
+              <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-center">Password Reset</h1>
+                <p className="text-lg lg:text-xl opacity-90 text-center">We've got you covered.</p>
+              </div>
+                {/* <h1 className="text-3xl lg:text-4xl font-bold mb-4">Password Reset</h1>
+                <p className="text-lg lg:text-xl opacity-90">We've got you covered.</p> */}
               </div>
             </div>
 
@@ -116,11 +123,11 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
             {/* Content */}
             <div className="relative z-10 flex flex-col justify-center text-white px-6 md:px-8 py-12 lg:py-0">
               <div className="flex items-center md:justify-center">
-                <img src={logo} alt="ResumeATS Logo" className="w-[245px] w-[253px] md:mt-[3rem] ml-[-12px]" />
+                <img src={logo} alt="ResumeATS Logo" className="w-[253px] md:mt-[3rem] ml-[-12px]" />
               </div>
               <div className='flex flex-col justify-center text-white md:px-14 md:mt-[3rem]'>
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Forgot Password?</h1>
-                <p className="text-lg lg:text-xl opacity-90">Don't worry, we'll help you get back in.</p>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-center">Forgot Password?</h1>
+                <p className="text-lg lg:text-xl opacity-90 text-center">Don't worry, we'll help you get back in.</p>
               </div>
             </div>
           </div>
@@ -128,10 +135,10 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
           {/* Right Side - Form Section */}
           <div className="w-full lg:w-1/2 bg-gray-50 p-6 lg:p-8 flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2 text-center">
                 Reset Your Password
               </h2>
-              <p className="text-gray-600 mb-6 lg:mb-8">
+              <p className="text-gray-600 mb-6 lg:mb-8 text-center">
                 Enter your email address and we'll send you a link to reset your password.
               </p>
 
