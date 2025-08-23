@@ -7,7 +7,6 @@ export default function ResumeSettings() {
   const [formData, setFormData] = useState<ResumeContent>({
     name: '',
     email: '',
-    phone: '',
     summary: '',
     experience: [{ company: '', position: '', duration: '', description: '' }],
     education: [{ institution: '', degree: '', year: '', gpa: '' }],
@@ -117,11 +116,6 @@ export default function ResumeSettings() {
             <div>
               <label className="block font-medium text-gray-700 mb-2">Email Address *</label>
               <input type="email" name="email" value={formData.email} onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" required disabled={saving} />
-            </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-2">Phone Number *</label>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange}
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" required disabled={saving} />
             </div>
           </div>

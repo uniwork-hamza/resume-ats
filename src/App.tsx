@@ -46,7 +46,6 @@ interface AnalysisData {
 interface ResumeFormData {
   name: string;
   email: string;
-  phone: string;
   summary: string;
   experience: Array<{
     company: string;

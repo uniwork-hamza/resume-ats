@@ -6,7 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 interface ResumeFormData {
   name: string;
   email: string;
-  phone: string;
   summary: string;
   experience: Array<{
     company: string;
@@ -39,7 +38,6 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
   const [formData, setFormData] = useState<ResumeFormData>({
     name: parsedData.name || user?.name || '',
     email: parsedData.email || user?.email || '',
-    phone: parsedData.phone || '',
     summary: parsedData.summary || '',
     experience: parsedData.experience && parsedData.experience.length > 0 
       ? parsedData.experience 
@@ -62,7 +60,7 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
 
     try {
       // Validate form data
-      if (!formData.name || !formData.email || !formData.phone || !formData.summary) {
+      if (!formData.name || !formData.email || !formData.summary) {
         throw new Error('Please fill in all required fields.');
       }
 
@@ -227,20 +225,6 @@ export default function ReviewResume({ parsedData, fileName, onNext, onBack }: R
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-            
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                   disabled={isLoading}

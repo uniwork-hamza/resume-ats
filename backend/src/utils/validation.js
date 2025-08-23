@@ -91,9 +91,6 @@ export const resumeSchemas = {
           'string.email': 'Please provide a valid email',
           'any.required': 'Email is required',
         }),
-        phone: Joi.string().required().messages({
-          'any.required': 'Phone is required',
-        }),
         summary: Joi.string().required().messages({
           'any.required': 'Summary is required',
         }),

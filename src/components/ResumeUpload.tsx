@@ -12,7 +12,6 @@ interface ResumeUploadProps {
 interface ResumeFormData {
   name: string;
   email: string;
-  phone: string;
   summary: string;
   experience: Array<{
     company: string;
@@ -43,7 +42,6 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
   const [formData, setFormData] = useState<ResumeFormData>({
     name: user?.name || '',
     email: user?.email || '',
-    phone: '',
     summary: '',
     experience: [{ company: '', position: '', duration: '', description: '' }],
     education: [{ institution: '', degree: '', year: '', gpa: '' }],
@@ -149,7 +147,7 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
 
     try {
       // Validate form data
-      if (!formData.name || !formData.email || !formData.phone || !formData.summary) {
+      if (!formData.name || !formData.email || !formData.summary) {
         throw new Error('Please fill in all required fields.');
       }
 
@@ -628,20 +626,6 @@ export default function ResumeUpload({ onNext, onBack, onParseComplete }: Resume
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-                disabled={isLoading}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
                 disabled={isLoading}
