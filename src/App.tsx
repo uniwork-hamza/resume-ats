@@ -324,13 +324,14 @@ function AppContent() {
   function ReviewResumeScreen() {
     const { goTo } = useNav();
     
-    if (!parsedResumeData && !isNavigatingFromReview) {
-      // If no parsed data and not in the middle of navigation, redirect to upload
-      goTo('/resume-upload');
+    // Don't redirect if we're in the middle of navigation from review
+    if (isNavigatingFromReview) {
       return null;
     }
     
     if (!parsedResumeData) {
+      // If no parsed data and not navigating from review, redirect to upload
+      goTo('/resume-upload');
       return null;
     }
     
@@ -594,7 +595,7 @@ function AppContent() {
       <Route path="/dashboard" element={isAuthenticated ? <DashboardScreen /> : <Navigate to="/auth/signin?redirect=/dashboard" />} />
       <Route path="/reports" element={isAuthenticated ? <ReportsScreen /> : <Navigate to="/auth/signin?redirect=/reports" />} />
       <Route path="/resume-upload" element={isAuthenticated ? <ResumeUploadScreen /> : <Navigate to="/auth/signin?redirect=/resume-upload" />} />
-      <Route path="/review-resume" element={isAuthenticated && parsedResumeData ? <ReviewResumeScreen /> : <Navigate to="/resume-upload" />} />
+      <Route path="/review-resume" element={isAuthenticated && (parsedResumeData || isNavigatingFromReview) ? <ReviewResumeScreen /> : <Navigate to="/resume-upload" />} />
       <Route path="/job-description" element={isAuthenticated && resumeData ? <JobDescriptionScreen /> : <Navigate to="/auth/signin?redirect=/job-description" />} />
       <Route path="/loading" element={isAuthenticated && resumeData && jobDescription ? <LoadingScreen /> : <Navigate to="/auth/signin?redirect=/loading" />} />
       <Route path="/results/:id" element={isAuthenticated ? <AnalysisScreen /> : <Navigate to="/auth/signin?redirect=/results" />} />
