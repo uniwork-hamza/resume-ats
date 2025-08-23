@@ -41,6 +41,11 @@ interface AnalysisData {
     educationMatch: string;
     overallFit: string;
   };
+  recommendations?: {
+    experienceGaps: string[];
+    skillDevelopment: string[];
+    resumeImprovements: string[];
+  };
 }
 
 interface ResumeFormData {
@@ -430,7 +435,13 @@ function AppContent() {
                          backendData.detailedAnalysis as { experienceMatch: string; skillsMatch: string; educationMatch: string; overallFit: string; } :
                          (backendData.aiResponse?.detailedAnalysis && typeof backendData.aiResponse.detailedAnalysis === 'object') ?
                          backendData.aiResponse.detailedAnalysis as { experienceMatch: string; skillsMatch: string; educationMatch: string; overallFit: string; } :
-                         undefined
+                         undefined,
+        
+        recommendations: (backendData.recommendations && typeof backendData.recommendations === 'object') ?
+                        backendData.recommendations as { experienceGaps: string[]; skillDevelopment: string[]; resumeImprovements: string[] } :
+                        (backendData.aiResponse?.recommendations && typeof backendData.aiResponse.recommendations === 'object') ?
+                        backendData.aiResponse.recommendations as { experienceGaps: string[]; skillDevelopment: string[]; resumeImprovements: string[] } :
+                        undefined
       };
     };
 
@@ -444,7 +455,6 @@ function AppContent() {
           resumeData={resumeData}
           jobDescription={jobDescription}
           onComplete={(analysisData) => {
-            console.log('App: Received analysis completion');
             const transformedData = transformAnalysisData(analysisData);
             setAnalysisResults(transformedData);
             goTo(`/results/${analysisData.id}`);
@@ -480,7 +490,8 @@ function AppContent() {
                 improvements: a.improvements,
                 missingKeywords: a.missingKeywords,
                 keywordData: a.keywordData,
-                detailedAnalysis: a.detailedAnalysis
+                detailedAnalysis: a.detailedAnalysis,
+                recommendations: a.recommendations
               });
             }
           } catch (error) { 

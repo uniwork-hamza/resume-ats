@@ -349,7 +349,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
           )}
 
           {/* Comprehensive Recommendations */}
-          {recommendations && (
+          {recommendations ? (
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
                 <Lightbulb className="h-6 w-6 text-yellow-600" />
@@ -358,7 +358,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
 
               <div className="space-y-6">
                 {/* Experience Gaps */}
-                {recommendations.experienceGaps && recommendations.experienceGaps.length > 0 && (
+                {recommendations.experienceGaps && recommendations.experienceGaps.length > 0 ? (
                   <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                     <div className="flex items-center space-x-2 mb-3">
                       <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -373,10 +373,14 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                       ))}
                     </ul>
                   </div>
+                ) : (
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-gray-600 text-sm">No experience gaps identified.</p>
+                  </div>
                 )}
 
                 {/* Skill Development */}
-                {recommendations.skillDevelopment && recommendations.skillDevelopment.length > 0 && (
+                {recommendations.skillDevelopment && recommendations.skillDevelopment.length > 0 ? (
                   <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
                     <div className="flex items-center space-x-2 mb-3">
                       <BookOpen className="h-5 w-5 text-orange-600" />
@@ -391,10 +395,14 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                       ))}
                     </ul>
                   </div>
+                ) : (
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-gray-600 text-sm">No skill development suggestions.</p>
+                  </div>
                 )}
 
                 {/* Resume Improvements */}
-                {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 && (
+                {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 ? (
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="flex items-center space-x-2 mb-3">
                       <FileText className="h-5 w-5 text-blue-600" />
@@ -409,8 +417,20 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                       ))}
                     </ul>
                   </div>
+                ) : (
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-gray-600 text-sm">No resume improvement suggestions.</p>
+                  </div>
                 )}
               </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                <Lightbulb className="h-6 w-6 text-yellow-600" />
+                <span>Professional Recommendations</span>
+              </h2>
+              <p className="text-gray-600">Recommendations data not available.</p>
             </div>
           )}
 
