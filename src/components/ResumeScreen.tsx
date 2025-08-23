@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Upload, FileText, Plus, Loader2 } from 'lucide-react';
 import { resumeApi, Resume } from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 import ResumeSettings from './Settings';
 
 export default function ResumeScreen() {
@@ -38,13 +37,10 @@ export default function ResumeScreen() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading...</p>
-          </div>
+      <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-blue-900">Loading...</p>
         </div>
       </div>
     );
@@ -53,34 +49,31 @@ export default function ResumeScreen() {
   // If user has no resume, redirect to upload page
   if (!resume) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back</span>
-          </button>
-          
-          <div className="text-center">
-            <div className="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-              <FileText className="h-12 w-12 text-blue-600" />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">No Resume Found</h1>
-            <p className="text-xl text-gray-600 mb-8">
-              You haven't uploaded a resume yet. Let's get started!
-            </p>
-            
-            <button
-              onClick={handleUploadNewResume}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg inline-flex items-center space-x-2 transition-colors"
-            >
-              <Upload className="h-6 w-6" />
-              <span>Upload Your First Resume</span>
-            </button>
+      <div className="max-w-7xl mx-auto md:px-14 px-4 py-12">
+        {/* <button 
+          onClick={() => navigate(-1)} 
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 mb-8"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back</span>
+        </button>
+         */}
+        <div className="text-center">
+          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <FileText className="h-12 w-12 text-blue-800" />
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">No Resume Found</h1>
+          <p className="text-xl text-blue-900 mb-8">
+            You haven't uploaded a resume yet. Let's get started!
+          </p>
+          
+          <button
+            onClick={handleUploadNewResume}
+            className="bg-gray-900 hover:bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold text-lg inline-flex items-center space-x-2 transition-colors"
+          >
+            <Upload className="h-6 w-6" />
+            <span>Upload Your First Resume</span>
+          </button>
         </div>
       </div>
     );
@@ -88,18 +81,17 @@ export default function ResumeScreen() {
 
   // If user has a resume, show the settings with upload option
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back</span>
-          </button>
-          
+    <div className="max-w-7xl mx-auto md:px-14 py-8 px-4">
+      <div className="bg-gray-100 border border-blue-800 rounded-lg p-4 mb-6 flex flex-wrap justify-between">
+        <div className="flex items-center space-x-3">
+          <FileText className="h-6 w-6 text-blue-800" />
+          <div>
+            <h3 className="font-semibold text-blue-900">Current Resume</h3>
+            <p className="text-blue-800">{resume.title}</p>
+          </div>
+        </div>
+        
+        <div className="flex justify-end">
           <button
             onClick={handleUploadNewResume}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center space-x-2 transition-colors"
@@ -108,25 +100,15 @@ export default function ResumeScreen() {
             <span>Upload New Resume</span>
           </button>
         </div>
-        
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <div className="flex items-center space-x-3">
-            <FileText className="h-6 w-6 text-blue-600" />
-            <div>
-              <h3 className="font-semibold text-blue-900">Current Resume</h3>
-              <p className="text-blue-700">{resume.title}</p>
-            </div>
-          </div>
-        </div>
-        
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
-          </div>
-        )}
-        
-        <ResumeSettings />
       </div>
+      
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          {error}
+        </div>
+      )}
+      
+      <ResumeSettings />
     </div>
   );
 } 

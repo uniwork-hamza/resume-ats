@@ -52,7 +52,6 @@ export interface Resume {
 export interface ResumeContent {
   name: string;
   email: string;
-  phone: string;
   summary: string;
   experience: Array<{
     company: string;

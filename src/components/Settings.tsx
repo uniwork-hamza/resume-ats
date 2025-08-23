@@ -7,7 +7,6 @@ export default function ResumeSettings() {
   const [formData, setFormData] = useState<ResumeContent>({
     name: '',
     email: '',
-    phone: '',
     summary: '',
     experience: [{ company: '', position: '', duration: '', description: '' }],
     education: [{ institution: '', degree: '', year: '', gpa: '' }],
@@ -100,9 +99,9 @@ export default function ResumeSettings() {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Resume</h1>
-        <p className="text-xl text-gray-600">Edit your resume details below</p>
+      <div className="text-left mb-8">
+        <h1 className="text-3xl font-bold  text-gray-700 mb-4">Your Resume</h1>
+        <p className="text-xl text-gray-700">Edit your resume details below</p>
       </div>
         {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"><AlertCircle className="inline-block mr-2"/> {error}</div>}
         {success && <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700"><CheckCircle className="inline-block mr-2"/> {success}</div>}
@@ -110,96 +109,91 @@ export default function ResumeSettings() {
           {/* Personal Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+              <label className="block font-medium text-gray-700 mb-2">Full Name *</label>
               <input type="text" name="name" value={formData.name} onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required disabled={saving} />
+                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" required disabled={saving} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+              <label className="block font-medium text-gray-700 mb-2">Email Address *</label>
               <input type="email" name="email" value={formData.email} onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required disabled={saving} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required disabled={saving} />
+                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" required disabled={saving} />
             </div>
           </div>
 
           {/* Summary */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Professional Summary *</label>
+            <label className="block font-medium text-gray-700 mb-2">Professional Summary *</label>
             <textarea name="summary" value={formData.summary} onChange={handleChange} rows={4}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required disabled={saving} />
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" required disabled={saving} />
           </div>
           {/* Experience */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Work Experience *</h3>
+              <h3 className="text-lg font-semibold  text-gray-700">Work Experience *</h3>
               <button type="button" onClick={addExperience}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" disabled={saving}>Add Experience</button>
+                className="bg-gray-900  hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm" disabled={saving}>Add Experience</button>
             </div>
             {formData.experience.map((exp, i) => (
               <div key={i} className="border rounded-lg p-6 mb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Experience {i+1}</h4>
+                  <h4 className="font-medium text-gray-700">Experience {i+1}</h4>
                   {formData.experience.length>1 && <button type="button" onClick={()=>removeExperience(i)} className="text-red-600"><X/></button>}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <input type="text" placeholder="Company Name" value={exp.company}
                     onChange={e=>updateExperience(i,'company',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                   <input type="text" placeholder="Job Title" value={exp.position}
                     onChange={e=>updateExperience(i,'position',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                   <input type="text" placeholder="Duration" value={exp.duration}
                     onChange={e=>updateExperience(i,'duration',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                 </div>
                 <textarea placeholder="Description" value={exp.description}
                   onChange={e=>updateExperience(i,'description',e.target.value)} rows={3} required disabled={saving}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
               </div>
             ))}
           </div>
           {/* Education */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Education *</h3>
+              <h3 className="text-lg font-semibold  text-gray-700">Education *</h3>
               <button type="button" onClick={addEducation}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" disabled={saving}>Add Education</button>
+                className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm" disabled={saving}>Add Education</button>
             </div>
             {formData.education.map((edu,i)=>(
               <div key={i} className="border rounded-lg p-6 mb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Education {i+1}</h4>
+                  <h4 className="font-medium text-gray-700">Education {i+1}</h4>
                   {formData.education.length>1 && <button type="button" onClick={()=>removeEducation(i)} className="text-red-600"><X/></button>}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <input type="text" placeholder="Institution" value={edu.institution}
                     onChange={e=>updateEducation(i,'institution',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                   <input type="text" placeholder="Degree" value={edu.degree}
                     onChange={e=>updateEducation(i,'degree',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                   <input type="text" placeholder="Year" value={edu.year}
                     onChange={e=>updateEducation(i,'year',e.target.value)} required disabled={saving}
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
                 </div>
                 {/* <input type="text" placeholder="GPA (optional)" value={edu.gpa}
                   onChange={e=>updateEducation(i,'gpa',e.target.value)} disabled={saving}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" /> */}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" /> */}
               </div>
             ))}
           </div>
           {/* Skills */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Skills (comma-separated) *</label>
+            <label className="block font-medium text-gray-700 mb-2">Skills (comma-separated) *</label>
             <textarea name="skills" value={formData.skills} onChange={handleChange} rows={2} required disabled={saving}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500" />
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-sm" />
           </div>
           <button type="submit" disabled={saving}
-            className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold">
+            className="w-full bg-gray-900 hover:bg-gray-700 text-white px-4 py-3 rounded-lg font-semibold">
             {saving ? 'Saving...' : 'Save Resume'}
           </button>
         </form>

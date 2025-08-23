@@ -149,7 +149,6 @@ ${resumeText}
 {
   "name": "[Full name of the candidate]",
   "email": "[Email address]",
-  "phone": "[Phone number]",
   "summary": "[Professional summary or objective - if not present, create a brief one based on the resume]",
   "experience": [
     {
@@ -171,7 +170,7 @@ ${resumeText}
 }
 
 **EXTRACTION GUIDELINES:**
-1. **Personal Information**: Extract name, email, phone from contact section
+1. **Personal Information**: Extract name, email from contact section
 2. **Summary**: Use existing summary/objective, or create one based on experience (2-3 sentences)
 3. **Experience**: List all jobs in reverse chronological order
    - Include company name, position, duration, and detailed description
@@ -356,7 +355,7 @@ export const parseResumeText = async (resumeText) => {
     }
 
     // Validate required structure
-    const requiredFields = ['name', 'email', 'phone', 'summary', 'experience', 'education', 'skills'];
+    const requiredFields = ['name', 'email', 'summary', 'experience', 'education', 'skills'];
     const missingFields = requiredFields.filter(field => !(field in parsedResume));
     
     if (missingFields.length > 0) {
