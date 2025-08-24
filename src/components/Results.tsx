@@ -402,7 +402,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                 )}
 
                 {/* Resume Improvements */}
-                {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 ? (
+                {/* {recommendations.resumeImprovements && recommendations.resumeImprovements.length > 0 ? (
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="flex items-center space-x-2 mb-3">
                       <FileText className="h-5 w-5 text-blue-600" />
@@ -421,7 +421,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <p className="text-gray-600 text-sm">No resume improvement suggestions.</p>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           ) : (
@@ -462,7 +462,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Missing Keywords</h2>
               <p className="text-gray-600 mb-4">
-                Consider adding these important keywords from the job description to improve your ATS score:
+                Consider adding these important keywords from the job description to improve your score:
               </p>
               <div className="flex flex-wrap gap-2">
                 {missingKeywords.map((keyword, index) => (
@@ -498,7 +498,7 @@ export default function Results({ analysisData, onBack, onStartNewTest }: Result
           <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">
             <h3 className="text-xl font-bold mb-4">Ready for Another Test?</h3>
             <p className="text-green-100 mb-6">
-              Test your resume against different job descriptions to maximize your chances.
+              Test your resume against different job descriptions to maximise your chances.
             </p>
             <button
               onClick={onStartNewTest}

@@ -20,10 +20,10 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
   const analysisIdRef = useRef<string>('');
 
   const steps = [
-    { id: 1, text: 'Create JD', description: 'Creating job description...', icon: Target, duration: 1000 },
-    { id: 2, text: 'Analyze Requirements', description: 'Analyzing job requirements...', icon: Clock, duration: 1500 },
-    { id: 3, text: 'Compare Skills', description: 'Comparing skills and experience...', icon: BarChart3, duration: 3000 },
-    { id: 4, text: 'Generate Recommendations', description: 'Generating recommendations...', icon: CheckCircle, duration: 2500 }
+    { id: 1, text: 'Create JD', description: 'Creating Job Description...', icon: Target, duration: 1000 },
+    { id: 2, text: 'Analyse Requirements', description: 'Analysing Job Requirements...', icon: Clock, duration: 1500 },
+    { id: 3, text: 'Compare Skills', description: 'Comparing Skills and Experience...', icon: BarChart3, duration: 3000 },
+    { id: 4, text: 'Generate Recommendations', description: 'Generating Recommendations...', icon: CheckCircle, duration: 2500 }
   ];
 
   // Generate unique analysis ID for this session
@@ -173,9 +173,9 @@ export default function Loading({ resumeData, jobDescription, onComplete }: Load
             </div>
             <div className="absolute -inset-4 bg-gradient-to-r from-[#182541] to-[#1e1c47] rounded-full opacity-20 animate-ping"></div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Analyzing Your Resume</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysing Your Resume</h1>
           <p className="text-xl text-gray-600">
-            Our AI is comparing your resume against the job requirements
+            Our AI is analysing your resume against the job requirements
           </p>
         </div>
 
