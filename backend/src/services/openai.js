@@ -9,7 +9,7 @@ const openai = new OpenAI({
 // Resume analysis prompt template
 const createAnalysisPrompt = (resumeData, jobDescription) => {
   return `
-You are an expert ATS (Applicant Tracking System) and HR consultant. Analyze the following resume against the job description and provide a comprehensive evaluation.
+You are an expert in ATS (Applicant Tracking System) and an HR consultant. Analyze the following resume against the job description and provide a comprehensive evaluation.
 
 **RESUME DATA:**
 ${JSON.stringify(resumeData, null, 2)}
@@ -24,7 +24,7 @@ Please provide a detailed Semantic Analysis in the following JSON format exactly
 {
   "jobTitle": "[Generate a concise, professional job title based on the job description content. This should be a standard industry title that best represents the position being analyzed]",
   "overallScore": [number between 1-100 - overall match score],
-  "keywordMatch": [weightage: 30% number between 1-100 - keyword alignment score, make sure to score according to the keywords data you will get in the keywordData field],
+  "keywordMatch": [weightage: 30% number between 1-100 - keyword alignment score, Make sure to score the weighted average of all other scores according to the keyword data in the keywordData field],
   "skillsMatch": [weightage: 30% number between 1-100 - skills alignment score],
   "experienceMatch": [weightage: 30% number between 1-100 - experience relevance score],
   "formatScore": [weightage: 10% number between 1-100 - resume format and ATS compatibility score],
@@ -149,7 +149,7 @@ ${resumeText}
 {
   "name": "[Full name of the candidate]",
   "email": "[Email address]",
-  "summary": "[Professional summary or objective - if not present, create a brief one based on the resume]",
+  "summary": "[Professional summary or objective - if present, use exactly as written; if not, create a brief one based on the resume]",
   "experience": [
     {
       "company": "[Company name]",
@@ -175,12 +175,12 @@ ${resumeText}
 3. **Experience**: List all jobs in reverse chronological order
    - Include company name, position, duration, and detailed description
    - Combine responsibilities and achievements into description
-4. **Education**: List all educational qualifications
+4. **Education**: List all educational qualifications in reverse chronological order
    - Include institution, degree, graduation year
    - Only include GPA if explicitly mentioned
 5. **Skills**: Extract all technical and soft skills mentioned throughout the resume
    - Combine into a comma-separated string
-   - Include programming languages, tools, certifications, etc.
+   - Make sure you only fetch skills. Sometimes you will get the skills title with other things like Skills and Projects, skills and certificates etc. So just get the skills nothing else.
 
 **IMPORTANT:**
 - Return ONLY valid JSON

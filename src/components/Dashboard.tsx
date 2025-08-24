@@ -61,7 +61,7 @@ export default function Dashboard({ onTestResume }: DashboardProps) {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Get Your Resume Job-Ready with AI-Powered Insights</h1>
-        <p className="text-gray-600">Ready to optimize your resume for your next job application?</p>
+        <p className="text-gray-600">Ready to optimise your resume for your next job application?</p>
       </div>
 
       {/* Quick Actions */}
